@@ -69,6 +69,7 @@ describe Knight do
         expect(piece.valid?(["E",@located[1] - 1])).to eq(true)
         expect(piece.valid?(["A",@located[1] + 1])).to eq(true)
         expect(piece.valid?(["A",@located[1] + 1])).to eq(true)
+        expect(piece.valid?(["A",@located[1]])).to eq(false)
     end
     
 
