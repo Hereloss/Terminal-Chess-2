@@ -1,10 +1,11 @@
 class Pawn
 
-    def initialize
+    def initialize(colour,location)
         @living = "Y"
-        @colour = "White"
-        @current_location = ["A",5]
+        @colour = colour
+        @current_location = location
         @previously = false
+        @letters = ["A","B","C","D","E","F","G","H"]
     end
 
     def alive
@@ -24,49 +25,91 @@ class Pawn
         return @current_location
     end
 
-    def move
-        moves = {:alive => @living, :colour => @colour, :valid => true}
-        @previously = true
+    def move(coords,taking)
+        moves = {:alive => @living, :colour => @colour, :valid => move_valid?(coords,@previously,taking)}
         return moves
+    end
+
+    def confirm(coords)
+        @current_location = coords
+        @previously = true
     end
 
     def previous?
         return @previously
     end
 
-    def valid?(located,previous)
+    def valid?(located,previous,taking)
+        unless (taking == true || located[0] == @current_location[0])
+            return false
+        end
         case @colour
         when "White"
-            if located[1].to_i == (@current_location[1].to_i + 1)
-                return true
-            else
-                if previous == false
-                    if located[1].to_i == (@current_location[1].to_i + 2)
-                        return true
-                    else
-                        return false
-                    end
-                else
-                    return false
-                end
-            end
+            return white_valid(located,previous,taking)
         when "Black"
-            if located[1].to_i == (@current_location[1].to_i - 1)
-                return true
-            else
-                if previous == false
-                    if located[1].to_i == (@current_location[1].to_i - 2)
-                        return true
-                    else
-                        return false
-                    end
-                else
-                    return false
-                end
-            end
+            return black_valid(located,previous,taking)
         end
     end
 
-    def move_valid?
+    def move_valid?(located,previous,taking)
+        if @living == "N"
+            return false
+        else
+            return valid?(located,previous,taking)
+        end
+    end
+
+    def white_valid(located,previous,taking)
+        if taking == true
+            return white_takes(located)
+        end
+        if located[1].to_i == (@current_location[1].to_i + 1)
+            return true
+        else
+            if previous == false
+                if located[1].to_i == (@current_location[1].to_i + 2)
+                    return true
+                end
+            end
+            return false
+        end
+    end
+
+    def black_valid(located,previous,taking)
+        if taking == true
+            return black_takes(located)
+        end
+        if located[1].to_i == (@current_location[1].to_i - 1)
+            return true
+        else
+            if previous == false
+                if located[1].to_i == (@current_location[1].to_i - 2)
+                    return true
+                end
+            end
+            return false
+        end
+    end
+
+    def white_takes(located)
+        current_horz_loc = @letters.find_index(@current_location[0])
+        letter = located[0]
+        new_horz_loc = @letters.find_index(letter)
+        if (located[1].to_i == (@current_location[1].to_i + 1) && (current_horz_loc + 1 == new_horz_loc || current_horz_loc - 1 == new_horz_loc))
+            return true
+        else
+            return false
+        end
+    end
+
+    def black_takes(located)
+        current_horz_loc = @letters.find_index(@current_location[0])
+        letter = located[0]
+        new_horz_loc = @letters.find_index(letter)
+        if (located[1].to_i == (@current_location[1].to_i - 1) && (current_horz_loc + 1 == new_horz_loc || current_horz_loc - 1 == new_horz_loc))
+            return true
+        else
+            return false
+        end
     end
 end
