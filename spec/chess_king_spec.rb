@@ -59,9 +59,13 @@ describe King do
 
 
     it "A move is valid if it is within 1 space around of the piece's current postition " do
-        piece = King.new("White",["A",5])
+        piece = King.new("White",["C",5])
         @located = piece.location
         expect(piece.valid?([@located[0],@located[1] - 1])).to eq(true)
+        expect(piece.valid?([@located[0],@located[1] + 1])).to eq(true)
+        expect(piece.valid?(["D",@located[1]])).to eq(true)
+        expect(piece.valid?(["B",@located[1]])).to eq(true)
+        expect(piece.valid?(["B",@located[1]])).to eq(true)
     end
     
 
