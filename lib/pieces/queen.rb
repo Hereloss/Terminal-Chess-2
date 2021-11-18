@@ -36,7 +36,7 @@ class Queen
         current_horz_loc = @letters.find_index(@current_location[0])
         letter = located[0]
         new_horz_loc = @letters.find_index(letter)
-        if (((located[1].to_i - @current_location[1].to_i) == (current_horz_loc.to_i  - new_horz_loc.to_i)) ||
+        if (((located[1].to_i - @current_location[1].to_i).abs == (current_horz_loc.to_i  - new_horz_loc.to_i).abs)  ||
             ((located[1].to_i == @current_location[1].to_i) || (current_horz_loc  == new_horz_loc))) 
             return true
         else

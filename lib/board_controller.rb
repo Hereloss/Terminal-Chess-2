@@ -74,5 +74,17 @@ class Board_Controller
             return @pieces_location_black
         end
     end
+
+    def move_control_valid?
+    end
+
+    def move_on_board?(move)
+        @letters = ["A","B","C","D","E","F","G","H"]
+        if (1..8).include?(move[0]) && @letters.include?(move[1])
+            return true
+        else
+            return false
+        end
+    end
 end
 

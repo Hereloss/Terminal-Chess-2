@@ -66,7 +66,7 @@ describe Bishop do
         old_horz_loc = @letters.find_index("C")
         diff_vert = new_location[1] - 5
         diff_horz = new_horz_loc - old_horz_loc
-        if diff_horz == diff_vert
+        if diff_horz.abs - diff_vert.abs == 0
             expect(piece.valid?(new_location)).to eq(true)
         end
     end
