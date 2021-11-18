@@ -4,9 +4,15 @@ require_relative './pieces/queen.rb'
 require_relative './pieces/bishop.rb'
 require_relative './pieces/king.rb'
 require_relative './pieces/knight.rb'
-
+require_relative './board.rb'
 
 class Board_Controller
+
+    attr_reader :pieces_location_white
+    attr_reader :pieces_white
+    attr_reader :pieces_location_black
+    attr_reader :pieces_black
+    attr_reader :board
 
     def initialize
         store_pieces_location
@@ -42,6 +48,7 @@ class Board_Controller
                 "B2" => Bishop.new("White",@pieces_location_white.key("B2")), 
                 "Q" => Queen.new("White",@pieces_location_white.key("Q")),
                 "K" => King.new("White",@pieces_location_white.key("K"))}
+                @board = Board.new
     end
 
     def pieces_black_exist?
@@ -75,15 +82,95 @@ class Board_Controller
         end
     end
 
-    def move_control_valid?
+    def move_control_valid?(move_from, move_to,colour)
+        case first_3_move_checks(move_from, move_to,colour)
+        when true
+            @taking = taking(move_to, colour)
+            case (piece_check(move_from, move_to,colour) && ray_trace_control(move_from,move_to))
+            when true
+                piece_control(move_from,move_to,colour)
+                return true
+            when false
+                return false
+            end
+        when false
+            return false
+        end
+    end
+
+    def ray_trace_control(from,to)
+        return board.ray_trace
+    end
+
+    def piece_check(move_from, move_to,colour)
+        if colour == "White"
+            piece = @pieces_location_white[move_from]
+            piece_object = @pieces_white[piece]
+            if piece_object.is_a?(Pawn)
+                return piece_object.move(move_to,@taking)
+            else
+                return piece_object.move(move_to)
+            end
+        elsif colour == "Black"
+            piece = @pieces_location_black[move_from]
+            piece_object = @pieces_black[piece]
+            if piece_object.is_a?(Pawn)
+                return piece_object.move(move_to,@taking)
+            else
+                return piece_object.move(move_to)
+            end
+        end
+    end
+
+    def taking(position,colour)
+        case colour
+        when "Black"
+            if @pieces_location_white[position].nil?
+                return false
+            else
+                return true
+            end
+        when "White"
+            if @pieces_location_black[position].nil?
+                return false
+            else
+                return true
+            end
+        end
+    end
+
+    def first_3_move_checks(move_from, move_to,colour)
+        case (move_on_board?(move_from) && move_on_board?(move_to) && piece_at_position(move_from,colour) && !(piece_at_position(move_to,colour)))
+        when true
+            return true
+        when false
+            return false
+        end
     end
 
     def move_on_board?(move)
         @letters = ["A","B","C","D","E","F","G","H"]
-        if (1..8).include?(move[0]) && @letters.include?(move[1])
+        if (1..8).include?(move[1]) && @letters.include?(move[0])
             return true
         else
             return false
+        end
+    end
+
+    def piece_at_position(position,colour)
+        case colour
+        when "White"
+            if @pieces_location_white[position].nil?
+                return false
+            else
+                return true
+            end
+        when "Black"
+            if @pieces_location_black[position].nil?
+                return false
+            else
+                return true
+            end
         end
     end
 end
