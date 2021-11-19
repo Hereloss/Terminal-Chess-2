@@ -128,6 +128,27 @@ describe Board_Controller do
     end
 
     it "If a move is valid, the controller will update its position hash for the piece" do
+        board_control = Board_Controller.new
+        locations_w = board_control.piece_controller.pieces_location_white
+        start_position = locations_w.key("P1")
+        locations_b = board_control.piece_controller.pieces_location_black
+        end_position = locations_b.key("P1")
+        if board_control.move_control_valid?(start_position, end_position,"White") == true
+            piece = board_control.piece_controller.pieces_white["P1"]
+            expect(board_control.piece_controller.pieces_location_white[end_position]).to eq "P1"
+        end
+    end
+
+    it "If a piece has been taken, it is removed from the hash" do
+        board_control = Board_Controller.new
+        locations_w = board_control.piece_controller.pieces_location_white
+        start_position = locations_w.key("P1")
+        locations_b = board_control.piece_controller.pieces_location_black
+        end_position = locations_b.key("P1")
+        if board_control.move_control_valid?(start_position, end_position,"White") == true
+            piece = board_control.piece_controller.pieces_black["P1"]
+            expect(board_control.piece_controller.pieces_location_black[end_position]).to eq "None"
+        end
     end
 
     it "If asked for the board, will get this from the board object and return this" do

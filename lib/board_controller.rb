@@ -38,7 +38,7 @@ class Board_Controller
             @taking = taking(move_to, colour)
             case (piece_check(move_to) && ray_trace_control(move_from,move_to))
             when true
-                piece_control(move_to)
+                piece_control(move_to,colour)
                 return true
             when false
                 return false
@@ -86,10 +86,40 @@ class Board_Controller
         return board.ray_trace
     end
 
-    def piece_control(to)
+    def piece_control(to,colour)
+        if @taking = true
+            remove_piece(to,colour)
+        end
         @piece_moving.confirm(to)
+        update_hash(to,colour)
     end
 
+    def remove_piece(loc,colour)
+        if colour == "White"
+            piece_removing = @piece_controller.piece_id_from_location(loc,"Black")
+            piece_removing.kill
+            piece_removing.confirm([0,0])
+            piece_number = @piece_controller.pieces_black.key(piece_removing)
+            location = @piece_controller.pieces_location_black.key(piece_number)
+            @piece_controller.pieces_location_black[location] = "None"
+        elsif colour == "Black"
+            piece_removing = @piece_controller.piece_id_from_location(loc,"White")
+            piece_removing.kill
+            piece_removing.confirm([0,0])
+            piece_number = @piece_controller.pieces_white.key(piece_removing)
+            location = @piece_controller.pieces_location_white.key(piece_number)
+            @piece_controller.pieces_location_white[location] = "None"
+        end
+    end
 
+    def update_hash(to,colour)
+        if colour == "White"
+            piece_number = @piece_controller.pieces_white.key(@piece_moving)
+            @piece_controller.pieces_location_white[to] = piece_number
+        elsif colour == "Black"
+            piece_number = @piece_controller.pieces_black.key(@piece_moving)
+            @piece_controller.pieces_location_black[to] = piece_number
+        end
+    end
 end
 
