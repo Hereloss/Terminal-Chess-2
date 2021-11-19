@@ -15,7 +15,7 @@ class Board
     end
 
     def whats_there(coords)
-        coordinates = converter(coords)
+        coordinates = coords
         unless ((@board[coordinates[0]][coordinates[1]] == "X") || (@board[coordinates[0]][coordinates[1]] == "O"))
             return @board[coordinates[0]][coordinates[1]]
         else
@@ -26,29 +26,128 @@ class Board
 
     def converter(coords)
         @letters = ["A","B","C","D","E","F","G","H"]
-        location = [coords[1],@letters.find_index(coords[0]).to_i + 1]
+        location = [coords[1].to_i,@letters.find_index(coords[0]).to_i + 1]
         location[0] = 8 - location[0]
-        print location
         return location
     end
 
-    def whats_there_set(ray)
-    end
-
-    def ray(from,to,direction)
+    def ray_empty?(from,to_loc,direction)
+        current = converter(from)
+        to = converter(to_loc)
         case direction
-        when up
-        when down
-        when left
-        when right
-        when up_right
-        when up_left
-        when down_right
-        when down_left
+        when "up"
+            current[0] -= 1
+            until current == to
+                if whats_there(current) != "E"
+                    return false
+                end
+                current[0] -= 1
+            end
+            return true
+        when "down"
+            current[0] += 1
+            until current == to
+                if whats_there(current) != "E"
+                    return false
+                end
+                current[0] += 1
+            end
+        when "left"
+            current[1] -= 1
+            until current == to
+                if whats_there(current) != "E"
+                    return false
+                end
+                current[1] -= 1
+            end
+            return true
+        when "right"
+            current[1] += 1
+            until current == to
+                if whats_there(current) != "E"
+                    return false
+                end
+                current[1] += 1
+            end
+            return true
+        when "up_right"
+            current[0] -= 1
+            current[1] += 1
+            until current == to
+                if whats_there(current) != "E"
+                    return false
+                end
+                current[0] -= 1
+                current[1] += 1
+            end
+            return true
+        when "up_left"
+            current[0] -= 1
+            current[1] -= 1
+            until current == to
+                if whats_there(current) != "E"
+                    return false
+                end
+                current[0] -= 1
+                current[1] -= 1
+            end
+            return true
+        when "down_right"
+            current[0] += 1
+            current[1] += 1
+            until current == to
+                if whats_there(current) != "E"
+                    return false
+                end
+                current[0] += 1
+                current[1] += 1
+            end
+            return true
+        when "down_left"
+            current[0] += 1
+            current[1] -= 1
+            until current == to
+                if whats_there(current) != "E"
+                    return false
+                end
+                current[0] += 1
+                current[1] -= 1
+            end
+            return true
         end
     end
 
     def ray_trace
         return true
+    end
+
+    def compass(to,from)
+       to_pos = converter(to)
+       from_pos = converter(from)
+       up = to_pos[0] > from_pos[0]
+       down = to_pos[0] < from_pos[0]
+       right = to_pos[1] < from_pos[1]
+       left = to_pos[1] > from_pos[1]
+       if up == true
+            if left == true
+                return "up_left"
+            elsif right == true
+                return "up_right"
+            else
+                return "up"
+            end
+        elsif down == true
+            if left == true
+                return "down_left"
+            elsif right == true
+                return "down_right"
+            else
+                return "down"
+            end
+        elsif right == true
+            return "right"
+        elsif left == true
+            return "left"
+        end
     end
 end

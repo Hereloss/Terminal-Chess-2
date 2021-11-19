@@ -8,18 +8,33 @@ describe Board do
 
     it "When given a co-ordinate, returns the object in the array at that point" do
         board = Board.new
-        expect(board.whats_there(["A",2])).to eq("P")
+        location = board.converter(["A",2])
+        expect(board.whats_there(location)).to eq("P")
     end
 
     it "Can confirm if a given point in the array is empty" do
         board = Board.new
-        expect(board.whats_there(["A",5])).to eq("E")
+        location = board.converter(["A",5])
+        expect(board.whats_there(location)).to eq("E")
     end
 
     it "Can confirm if a given set of points in the array are empty" do
+        board = Board.new
+        expect(board.ray_empty?(["A",3],["A",6],"up")).to eq true 
     end
 
-    it "Given the piece type, can confirm the ray the pieces movement will take" do
+    it "Has a function which will return a string referencing the direction" do
+        expect(subject.compass(["A",3],["A",6])).to eq "up"
+        expect(subject.compass(["A",6],["A",3])).to eq "down"
+        expect(subject.compass(["A",3],["C",3])).to eq "right"
+        expect(subject.compass(["C",3],["A",3])).to eq "left"
+        expect(subject.compass(["A",3],["C",6])).to eq "up_right"
+        expect(subject.compass(["C",6],["A",3])).to eq "down_left"
+        expect(subject.compass(["A",6],["C",3])).to eq "down_right"
+        expect(subject.compass(["C",3],["A",6])).to eq "up_left"
+    end
+
+    it "Can confirm the direction given in a move" do
     end
 
     it "Can trace the ray of this movement and return if it is clear or not" do

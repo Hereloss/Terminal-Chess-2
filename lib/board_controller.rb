@@ -87,7 +87,7 @@ class Board_Controller
     end
 
     def piece_control(to,colour)
-        if @taking = true
+        if @taking == true
             remove_piece(to,colour)
         end
         @piece_moving.confirm(to)
