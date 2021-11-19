@@ -1,9 +1,4 @@
-require_relative './pieces/pawn.rb'
-require_relative './pieces/rook.rb'
-require_relative './pieces/queen.rb'
-require_relative './pieces/bishop.rb'
-require_relative './pieces/king.rb'
-require_relative './pieces/knight.rb'
+require_relative './pieces/pieces.rb'
 require_relative './board.rb'
 
 class Board_Controller
@@ -13,129 +8,43 @@ class Board_Controller
     attr_reader :pieces_location_black
     attr_reader :pieces_black
     attr_reader :board
+    attr_reader :piece_controller
 
     def initialize
-        store_pieces_location
-        @pieces_black = {"P1" => Pawn.new("Black",@pieces_location_black.key("P1")), 
-                "P2" => Pawn.new("Black",@pieces_location_black.key("P2")), 
-                "P3" => Pawn.new("Black",@pieces_location_black.key("P3")), 
-                "P4" => Pawn.new("Black",@pieces_location_black.key("P4")), 
-                "P5" => Pawn.new("Black",@pieces_location_black.key("P5")), 
-                "P6" => Pawn.new("Black",@pieces_location_black.key("P6")),
-                "P7" => Pawn.new("Black",@pieces_location_black.key("P7")), 
-                "P8" => Pawn.new("Black",@pieces_location_black.key("P8")), 
-                "R1" => Rook.new("Black",@pieces_location_black.key("R1")),
-                "R2" => Rook.new("Black",@pieces_location_black.key("R2")), 
-                "X1" => Knight.new("Black",@pieces_location_black.key("X1")), 
-                "X2" => Knight.new("Black",@pieces_location_black.key("X2")),
-                "B1" => Bishop.new("Black",@pieces_location_black.key("B1")), 
-                "B2" => Bishop.new("Black",@pieces_location_black.key("B2")), 
-                "Q" => Queen.new("Black",@pieces_location_black.key("Q")),
-                "K" => King.new("Black",@pieces_location_black.key("K"))}
-        @pieces_white= {"P1" => Pawn.new("White",@pieces_location_white.key("P1")), 
-                "P2" => Pawn.new("White",@pieces_location_white.key("P2")), 
-                "P3" => Pawn.new("White",@pieces_location_white.key("P3")), 
-                "P4" => Pawn.new("White",@pieces_location_white.key("P4")), 
-                "P5" => Pawn.new("White",@pieces_location_white.key("P5")), 
-                "P6" => Pawn.new("White",@pieces_location_white.key("P6")),
-                "P7" => Pawn.new("White",@pieces_location_white.key("P7")), 
-                "P8" => Pawn.new("White",@pieces_location_white.key("P8")), 
-                "R1" => Rook.new("White",@pieces_location_white.key("R1")),
-                "R2" => Rook.new("White",@pieces_location_white.key("R2")), 
-                "X1" => Knight.new("White",@pieces_location_white.key("X1")), 
-                "X2" => Knight.new("White",@pieces_location_white.key("X2")),
-                "B1" => Bishop.new("White",@pieces_location_white.key("B1")), 
-                "B2" => Bishop.new("White",@pieces_location_white.key("B2")), 
-                "Q" => Queen.new("White",@pieces_location_white.key("Q")),
-                "K" => King.new("White",@pieces_location_white.key("K"))}
-                @board = Board.new
+        @piece_controller = Pieces.new
+        @board = Board.new
     end
 
     def pieces_black_exist?
-        return @pieces_black
+        return @piece_controller.pieces_black
     end
 
     def pieces_white_exist?
-        return @pieces_white
-    end
-
-    def store_pieces_location
-        @pieces_location_white = {["A",2] => "P1",["B",2] => "P2",["C",2] => "P3",
-                                ["D",2] => "P4",["E",2] => "P5",["F",2] => "P6",
-                                ["G",2] => "P7", ["H",2] => "P8",
-                                ["A",1] => "R1",["B",1] => "X1",["C",1] => "B1",
-                                ["D",1] => "Q",["E",1] => "K",["F",1] => "B2",["G",1] => "X2",
-                                ["H",1] => "R2" }
-        @pieces_location_black = {["A",7] => "P1",["B",7] => "P2",["C",7] => "P3",
-                                ["D",7] => "P4",["E",7] => "P5",["F",7] => "P6",
-                                ["G",7] => "P7", ["H",7] => "P8",
-                                ["A",8] => "R1",["B",8] => "X1",["C",8] => "B1",
-                                ["D",8] => "Q",["E",8] => "K",["F",8] => "B2",["G",8] => "X2",
-                                ["H",8] => "R2" }
+        return  @piece_controller.pieces_white
     end
 
     def store_check(colour)
         if colour == "White"
-            return @pieces_location_white
+            return @piece_controller.pieces_location_white
         elsif colour == "Black"
-            return @pieces_location_black
+            return @piece_controller.pieces_location_black
         end
     end
 
     def move_control_valid?(move_from, move_to,colour)
         case first_3_move_checks(move_from, move_to,colour)
         when true
+            @piece_moving = @piece_controller.piece_id_from_location(move_from,colour)
             @taking = taking(move_to, colour)
-            case (piece_check(move_from, move_to,colour) && ray_trace_control(move_from,move_to))
+            case (piece_check(move_to) && ray_trace_control(move_from,move_to))
             when true
-                piece_control(move_from,move_to,colour)
+                piece_control(move_to)
                 return true
             when false
                 return false
             end
         when false
             return false
-        end
-    end
-
-    def ray_trace_control(from,to)
-        return board.ray_trace
-    end
-
-    def piece_check(move_from, move_to,colour)
-        if colour == "White"
-            piece = @pieces_location_white[move_from]
-            piece_object = @pieces_white[piece]
-            if piece_object.is_a?(Pawn)
-                return piece_object.move(move_to,@taking)
-            else
-                return piece_object.move(move_to)
-            end
-        elsif colour == "Black"
-            piece = @pieces_location_black[move_from]
-            piece_object = @pieces_black[piece]
-            if piece_object.is_a?(Pawn)
-                return piece_object.move(move_to,@taking)
-            else
-                return piece_object.move(move_to)
-            end
-        end
-    end
-
-    def taking(position,colour)
-        case colour
-        when "Black"
-            if @pieces_location_white[position].nil?
-                return false
-            else
-                return true
-            end
-        when "White"
-            if @pieces_location_black[position].nil?
-                return false
-            else
-                return true
-            end
         end
     end
 
@@ -158,20 +67,29 @@ class Board_Controller
     end
 
     def piece_at_position(position,colour)
-        case colour
-        when "White"
-            if @pieces_location_white[position].nil?
-                return false
-            else
-                return true
-            end
-        when "Black"
-            if @pieces_location_black[position].nil?
-                return false
-            else
-                return true
-            end
+        @piece_controller.piece_at_location(position,colour,"P")
+    end
+
+    def taking(position,colour)
+        @piece_controller.piece_at_location(position,colour,"T")
+    end
+
+    def piece_check(move_to)
+        if @piece_moving.is_a?(Pawn)
+            return @piece_moving.move(move_to,@taking)
+        else
+            return @piece_moving.move(move_to)
         end
     end
+
+    def ray_trace_control(from,to)
+        return board.ray_trace
+    end
+
+    def piece_control(to)
+        @piece_moving.confirm(to)
+    end
+
+
 end
 
