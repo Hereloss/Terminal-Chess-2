@@ -107,7 +107,7 @@ describe Board_Controller do
         start_position = locations_w.key("P1")
         locations_b = board_control.piece_controller.pieces_location_black
         end_position = locations_b.key("P1")
-        tracing = board_control.board.ray_trace
+        tracing = board_control.board.ray_trace(start_position,end_position)
         if (tracing == true) && (board_control.first_3_move_checks(locations_w, locations_b,"White") == true) && (board_control.piece_check(locations_w, locations_b,"White") == true)
             expect(board_control.move_control_valid?(locations_w, locations_b,"White")).to eq true
         elsif (tracing == false) || (board_control.first_3_move_checks(locations_w, locations_b,"White") == false) || (board_control.piece_check(locations_w, locations_b,"White") == false)
@@ -151,7 +151,24 @@ describe Board_Controller do
         end
     end
 
+    it "When passed in a move, will return true if the move is valid and false if it is not" do
+        board_control = Board_Controller.new
+        expect(board_control.player_makes_move(["A",2],["A",3],"White")[0]).to eq true
+        expect(board_control.player_makes_move(["A",7],["A",6],"Black")[0]).to eq true
+        expect(board_control.player_makes_move(["A",7],["A",6],"White")[0]).to eq false
+        expect(board_control.player_makes_move(["A",2],["A",3],"Black")[0]).to eq false
+    end
+
     it "If asked for the board, will get this from the board object and return this" do
+        board_control = Board_Controller.new
+        expect(board_control.return_board).to be_instance_of(Array)
+    end
+
+    it "Can return the piece on the board at a given position" do
+        board_control = Board_Controller.new
+        expect(board_control.piece_at_position_no_colour(["A",1])).to eq(["R","White"])
+        expect(board_control.piece_at_position_no_colour(["A",8])).to eq(["R","Black"])
+        expect(board_control.piece_at_position_no_colour(["A",5])).to eq(["None","N/A"])
     end
 
     it "If asked if check, has a method to confirm this" do

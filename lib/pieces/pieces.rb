@@ -67,6 +67,14 @@ class Pieces
                 "K" => King.new("White",@pieces_location_white.key("K"))}
     end
 
+    def piece_type_from_location(loc,colour)
+        if colour == "White"
+            return @pieces_location_white[loc]
+        elsif colour == "Black"
+            return @pieces_location_black[loc]
+        end
+    end
+
     def piece_id_from_location(loc,colour)
         if colour == "White"
             piece = @pieces_location_white[loc]

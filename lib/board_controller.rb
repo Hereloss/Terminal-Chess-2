@@ -70,6 +70,17 @@ class Board_Controller
         @piece_controller.piece_at_location(position,colour,"P")
     end
 
+    def piece_at_position_no_colour(position)
+        if piece = @piece_controller.piece_at_location(position,"Black","P")
+            return [@piece_controller.piece_type_from_location(position,"Black")[0],"Black"]
+        elsif piece = @piece_controller.piece_at_location(position,"White","P")
+            return [@piece_controller.piece_type_from_location(position,"White")[0],"White"]
+        else
+            return ["None","N/A"]
+        end
+
+    end
+
     def taking(position,colour)
         @piece_controller.piece_at_location(position,colour,"T")
     end
@@ -83,7 +94,11 @@ class Board_Controller
     end
 
     def ray_trace_control(from,to)
-        return board.ray_trace
+        return board.ray_trace(from,to)
+    end
+
+    def return_board
+        return @board.board
     end
 
     def piece_control(to,colour)
@@ -120,6 +135,15 @@ class Board_Controller
             piece_number = @piece_controller.pieces_black.key(@piece_moving)
             @piece_controller.pieces_location_black[to] = piece_number
         end
+    end
+
+    def player_makes_move(from,to,colour)
+        valid = move_control_valid?(from,to,colour)
+        if valid == true
+            @board.update_board(from,to)
+        end
+        outcome = [valid,colour,@board]
+        return outcome
     end
 end
 

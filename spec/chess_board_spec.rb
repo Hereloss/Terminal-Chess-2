@@ -28,16 +28,44 @@ describe Board do
         expect(subject.compass(["A",6],["A",3])).to eq "down"
         expect(subject.compass(["A",3],["C",3])).to eq "right"
         expect(subject.compass(["C",3],["A",3])).to eq "left"
-        expect(subject.compass(["A",3],["C",6])).to eq "up_right"
-        expect(subject.compass(["C",6],["A",3])).to eq "down_left"
-        expect(subject.compass(["A",6],["C",3])).to eq "down_right"
-        expect(subject.compass(["C",3],["A",6])).to eq "up_left"
-    end
-
-    it "Can confirm the direction given in a move" do
+        expect(subject.compass(["A",3],["C",5])).to eq "up_right"
+        expect(subject.compass(["C",5],["A",3])).to eq "down_left"
+        expect(subject.compass(["A",5],["C",3])).to eq "down_right"
+        expect(subject.compass(["C",3],["A",5])).to eq "up_left"
     end
 
     it "Can trace the ray of this movement and return if it is clear or not" do
+        board = Board.new
+        expect(board.ray_empty?(["A",3],["A",5],"up")).to eq true 
+        expect(board.ray_empty?(["A",3],["C",3],"right")).to eq true 
+        expect(board.ray_empty?(["C",3],["A",3],"left")).to eq true 
+        expect(board.ray_empty?(["A",3],["C",5],"up_right")).to eq true 
+        expect(board.ray_empty?(["A",5],["C",3],"down_right")).to eq true 
+        expect(board.ray_empty?(["C",3],["A",5],"up_left")).to eq true 
+        expect(board.ray_empty?(["C",5],["A",3],"down_left")).to eq true 
+        expect(board.ray_empty?(["A",3],["A",8],"up")).to eq false 
+        expect(board.ray_empty?(["A",6],["A",3],"down")).to eq true 
+    end
+
+    it "Can be passed just two locations, and will work out the direction and complete a ray trace" do
+        board = Board.new
+        expect(subject.ray_trace(["A",3],["A",5])).to eq true
+        expect(subject.ray_trace(["A",5],["A",3])).to eq true
+        expect(subject.ray_trace(["A",3],["C",3])).to eq true
+        expect(subject.ray_trace(["C",3],["A",3])).to eq true
+        expect(subject.ray_trace(["A",3],["C",5])).to eq true
+        expect(subject.ray_trace(["C",5],["A",3])).to eq true
+        expect(subject.ray_trace(["A",5],["C",3])).to eq true
+        expect(subject.ray_trace(["C",3],["A",5])).to eq true
+        expect(subject.ray_trace(["A",6],["A",8])).to eq false
+
+    end
+
+    it "When the move is confirmed, will update the board array with this new move" do
+        board = Board.new
+        board.update_board(["A",2],["A",3])
+        expect(board.board[5][1]).to eq("P")
+        expect(board.board[6][1]).to eq("O")
     end
 
     it "Can confirm if the King is in check using a ray-trace" do

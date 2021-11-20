@@ -52,6 +52,7 @@ class Board
                 end
                 current[0] += 1
             end
+            return true
         when "left"
             current[1] -= 1
             until current == to
@@ -117,8 +118,9 @@ class Board
         end
     end
 
-    def ray_trace
-        return true
+    def ray_trace(from,to)
+        direction = compass(from,to)
+        return ray_empty?(from,to,direction)
     end
 
     def compass(to,from)
@@ -148,6 +150,19 @@ class Board
             return "right"
         elsif left == true
             return "left"
+        end
+    end
+
+    def update_board(from,to)
+        move_from = converter(from)
+        move_to = converter(to)
+        piece_at_old_location = whats_there(move_from)
+        @board[move_to[0]][move_to[1]] = piece_at_old_location
+        parity = (move_from[0].to_i + move_from[1].to_i) % 2
+        if parity == 0
+            @board[move_from[0]][move_from[1]] = "X"
+        elsif parity == 1
+            @board[move_from[0]][move_from[1]] = "O"
         end
     end
 end
