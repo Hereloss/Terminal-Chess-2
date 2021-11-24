@@ -13,6 +13,7 @@ class Board_Controller
     def initialize
         @piece_controller = Pieces.new
         @board = Board.new
+        @judge = Judge.new(@board)
     end
 
     def pieces_black_exist?
@@ -38,8 +39,16 @@ class Board_Controller
             @taking = taking(move_to, colour)
             case (piece_check(move_to) && ray_trace_control(move_from,move_to))
             when true
-                piece_control(move_to,colour)
-                return true
+                # if in_check == colour
+                #     if check? == true
+                #         return false
+                #     else    
+                    piece_control(move_to,colour)
+                #     return true
+                #     end
+                # else
+                    return true
+                # end
             when false
                 return false
             end
@@ -144,6 +153,14 @@ class Board_Controller
         end
         outcome = [valid,colour,@board]
         return outcome
+    end
+
+    def check?
+        return false
+    end
+
+    def checkmate?
+        return false
     end
 end
 

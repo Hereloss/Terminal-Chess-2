@@ -13,6 +13,7 @@ class Game_Controller
     puts "Welcome To Chess!"
     puts "What would you like to do?"
     @rule_read = 0
+    @who_is_in_check = "None"
     menu
   end
 
@@ -42,7 +43,6 @@ class Game_Controller
     when 3
       exit
     when 4
-      #Test option
       return "test_over"
     end
   end
@@ -50,11 +50,56 @@ class Game_Controller
   def play_game
     puts "New Game started - Player 1 is White, Player 2 is Black"
     puts "White goes first!"
+    print @board_controller.board.board
     @current_color = "White"
-    case colour
+    game_playing
+  end
+
+  def game_playing
+    case @current_colour
     when "White"
+      turn_take("White")
+      @current_colour = "Black"
     when "Black"
-    return "#{@current_colour} wins!"
+      turn_take("Black")
+      @current_colour = "White"
+    end
+  end
+
+  def turn_take(colour)
+    if colour == "White"
+      move = @player_1.take_turn
+    elsif colour == "Black"
+      move = @player_2.take_turn
+    end
+    valid = board_controller.move_control_valid?(move[1],move[2],colour,@who_is_in_check)
+    if valid == false
+      puts "That move isn't valid - please put a valid move"
+      turn_take(colour)
+    elsif valid == true
+      check(colour)
+    end
+    if colour == "White"
+      @player_1.end_turn
+    elsif colour == "Black"
+     @player_2.end_turn
+    end
+  end
+
+  def check(colour)
+    in_check = board_controller.check?
+    if in_check == true
+      if board_controller.checkmate? 
+        player_wins(colour)
+      end
+      @who_is_in_check = colour
+    end
+  end
+
+  def player_wins(colour)
+    puts "Player #{colour} wins!"
+    puts "Thank you for playing - Goodbye!"
+    exit
   end
 
   def rules
