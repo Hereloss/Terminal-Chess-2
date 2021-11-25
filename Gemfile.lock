@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ansi (1.5.0)
+    colorize (0.8.1)
     diff-lcs (1.4.4)
     docile (1.4.0)
     rspec (3.10.0)
@@ -35,6 +36,7 @@ PLATFORMS
   arm64-darwin-20
 
 DEPENDENCIES
+  colorize (~> 0.8.1)
   rspec (~> 3.10)
   simplecov (~> 0.21.2)
   simplecov-console (~> 0.9.1)

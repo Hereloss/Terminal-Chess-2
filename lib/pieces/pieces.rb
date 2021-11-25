@@ -86,19 +86,24 @@ class Pieces
     end
 
     def piece_at_location(position,colour,check_type)
+        p position
         case check_type
         when "P"
             case colour
             when "White"
                 if @pieces_location_white[position].nil?
+                    puts "No white piece at position"
                     return false
                 else
+                    puts "White Piece at position"
                     return true
                 end
             when "Black"
                 if @pieces_location_black[position].nil?
+                    puts "No black piece at position"
                     return false
                 else
+                    puts "Black Piece at position"
                     return true
                 end
             end
@@ -106,15 +111,19 @@ class Pieces
             case colour
             when "Black"
                 if @pieces_location_white[position].nil?
+                    puts "No Black Piece at position"
                     return false
                 else
+                    puts "Black piece at position"
                     return true
                 end
             when "White"
                 if @pieces_location_black[position].nil?
+                    puts "No White Piece at position"
                     return false
                 else
                     return true
+                    puts "No White Piece at position"
                 end
             end
         end

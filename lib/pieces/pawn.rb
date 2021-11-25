@@ -27,7 +27,7 @@ class Pawn
 
     def move(coords,taking)
         moves = {:alive => @living, :colour => @colour, :valid => move_valid?(coords,@previously,taking)}
-        return moves
+        return move_valid?(coords,@previously,taking)
     end
 
     def confirm(coords)
@@ -41,6 +41,7 @@ class Pawn
 
     def valid?(located,previous,taking)
         unless (taking == true || located[0] == @current_location[0])
+            puts "Piece move not valid"
             return false
         end
         case @colour
@@ -71,6 +72,7 @@ class Pawn
                     return true
                 end
             end
+            puts "Piece move not valid"
             return false
         end
     end
@@ -87,6 +89,7 @@ class Pawn
                     return true
                 end
             end
+            puts "Piece move not valid"
             return false
         end
     end

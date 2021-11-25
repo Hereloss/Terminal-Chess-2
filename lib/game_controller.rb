@@ -1,5 +1,7 @@
 require_relative 'player'
 require_relative 'board_controller'
+require 'colorize'
+require 'colorized_string'
 
 class Game_Controller
 
@@ -14,6 +16,7 @@ class Game_Controller
     puts "What would you like to do?"
     @rule_read = 0
     @who_is_in_check = "None"
+    @current_color = "White"
     menu
   end
 
@@ -49,30 +52,41 @@ class Game_Controller
 
   def play_game
     puts "New Game started - Player 1 is White, Player 2 is Black"
-    puts "White goes first!"
-    print @board_controller.board.board
-    @current_color = "White"
-    game_playing
+    puts "White goes first! Please press enter to begin:"
+    colour = "White"
+    game_playing(colour)
   end
 
-  def game_playing
-    case @current_colour
+  def game_playing(colour)
+    case colour
     when "White"
+      system "clear"
+      @board_controller.board.board.each do |arr|
+        p arr
+      end
       turn_take("White")
       @current_colour = "Black"
+      colour = "Black"
+      game_playing(colour)
     when "Black"
+      system "clear"
+      @board_controller.board.board.each do |arr|
+        p arr
+      end
       turn_take("Black")
       @current_colour = "White"
+      colour = "White"
+      game_playing(colour)
     end
   end
 
   def turn_take(colour)
     if colour == "White"
-      move = @player_1.take_turn
+      move = @player1.my_turn
     elsif colour == "Black"
-      move = @player_2.take_turn
+      move = @player2.my_turn
     end
-    valid = board_controller.move_control_valid?(move[1],move[2],colour,@who_is_in_check)
+    valid = board_controller.player_makes_move(move[1],move[2],colour,@who_is_in_check)
     if valid == false
       puts "That move isn't valid - please put a valid move"
       turn_take(colour)
@@ -80,9 +94,9 @@ class Game_Controller
       check(colour)
     end
     if colour == "White"
-      @player_1.end_turn
+      @player1.end_turn
     elsif colour == "Black"
-     @player_2.end_turn
+     @player2.end_turn
     end
   end
 

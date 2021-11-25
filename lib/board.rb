@@ -39,6 +39,7 @@ class Board
             current[0] -= 1
             until current == to
                 if whats_there(current) != "E"
+                    puts "Ray not clear"
                     return false
                 end
                 current[0] -= 1
@@ -48,6 +49,7 @@ class Board
             current[0] += 1
             until current == to
                 if whats_there(current) != "E"
+                    puts "Ray not clear"
                     return false
                 end
                 current[0] += 1
@@ -57,6 +59,7 @@ class Board
             current[1] -= 1
             until current == to
                 if whats_there(current) != "E"
+                    puts "Ray not clear"
                     return false
                 end
                 current[1] -= 1
@@ -66,6 +69,7 @@ class Board
             current[1] += 1
             until current == to
                 if whats_there(current) != "E"
+                    puts "Ray not clear"
                     return false
                 end
                 current[1] += 1
@@ -76,6 +80,7 @@ class Board
             current[1] += 1
             until current == to
                 if whats_there(current) != "E"
+                    puts "Ray not clear"
                     return false
                 end
                 current[0] -= 1
@@ -87,6 +92,7 @@ class Board
             current[1] -= 1
             until current == to
                 if whats_there(current) != "E"
+                    puts "Ray not clear"
                     return false
                 end
                 current[0] -= 1
@@ -98,6 +104,7 @@ class Board
             current[1] += 1
             until current == to
                 if whats_there(current) != "E"
+                    puts "Ray not clear"
                     return false
                 end
                 current[0] += 1
@@ -109,6 +116,7 @@ class Board
             current[1] -= 1
             until current == to
                 if whats_there(current) != "E"
+                    puts "Ray not clear"
                     return false
                 end
                 current[0] += 1
@@ -120,6 +128,7 @@ class Board
 
     def ray_trace(from,to)
         direction = compass(from,to)
+        puts direction
         return ray_empty?(from,to,direction)
     end
 

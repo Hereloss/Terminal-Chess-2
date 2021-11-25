@@ -1,5 +1,6 @@
 require_relative './pieces/pieces.rb'
 require_relative './board.rb'
+require_relative './judge.rb'
 
 class Board_Controller
 
@@ -32,18 +33,23 @@ class Board_Controller
         end
     end
 
-    def move_control_valid?(move_from, move_to,colour)
+    def move_control_valid?(move_from, move_to,colour,in_check)
         case first_3_move_checks(move_from, move_to,colour)
         when true
             @piece_moving = @piece_controller.piece_id_from_location(move_from,colour)
             @taking = taking(move_to, colour)
-            case (piece_check(move_to) && ray_trace_control(move_from,move_to))
+            if @piece_controller.piece_type_from_location(move_from,colour)[0] == "X"
+                ray = true
+            else
+                ray = ray_trace_control(move_from,move_to)
+            end
+            case (piece_check(move_to) && ray)
             when true
                 # if in_check == colour
                 #     if check? == true
                 #         return false
                 #     else    
-                    piece_control(move_to,colour)
+                    piece_control(move_from,move_to,colour)
                 #     return true
                 #     end
                 # else
@@ -53,6 +59,7 @@ class Board_Controller
                 return false
             end
         when false
+            puts "First 3 failure"
             return false
         end
     end
@@ -71,6 +78,7 @@ class Board_Controller
         if (1..8).include?(move[1]) && @letters.include?(move[0])
             return true
         else
+            puts "Move not on board faiure"
             return false
         end
     end
@@ -110,12 +118,12 @@ class Board_Controller
         return @board.board
     end
 
-    def piece_control(to,colour)
+    def piece_control(from,to,colour)
         if @taking == true
             remove_piece(to,colour)
         end
         @piece_moving.confirm(to)
-        update_hash(to,colour)
+        update_hash(from,to,colour)
     end
 
     def remove_piece(loc,colour)
@@ -136,23 +144,25 @@ class Board_Controller
         end
     end
 
-    def update_hash(to,colour)
+    def update_hash(from,to,colour)
         if colour == "White"
             piece_number = @piece_controller.pieces_white.key(@piece_moving)
             @piece_controller.pieces_location_white[to] = piece_number
+            @piece_controller.pieces_location_white[from] = nil
         elsif colour == "Black"
             piece_number = @piece_controller.pieces_black.key(@piece_moving)
             @piece_controller.pieces_location_black[to] = piece_number
+            @piece_controller.pieces_location_black[from] = nil
         end
     end
 
-    def player_makes_move(from,to,colour)
-        valid = move_control_valid?(from,to,colour)
+    def player_makes_move(from,to,colour,in_check)
+        valid = move_control_valid?(from,to,colour,in_check)
         if valid == true
             @board.update_board(from,to)
         end
-        outcome = [valid,colour,@board]
-        return outcome
+        # outcome = [valid,colour,@board]
+        return valid
     end
 
     def check?

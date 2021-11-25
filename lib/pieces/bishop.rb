@@ -40,6 +40,7 @@ class Bishop
         if ((located[1].to_i - @current_location[1].to_i).abs == (current_horz_loc.to_i  - new_horz_loc.to_i).abs) 
             return true
         else
+            puts "Piece move not valid"
             return false
         end
     end

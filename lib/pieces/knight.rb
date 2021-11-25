@@ -47,6 +47,7 @@ class Knight
             ((located[1].to_i == @current_location[1].to_i - 2) && (current_horz_loc + 1 == new_horz_loc)))
             return true
         else
+            puts "Piece move not valid"
             return false
         end
     end

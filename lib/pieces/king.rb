@@ -41,6 +41,7 @@ class King
             (current_horz_loc == new_horz_loc || (current_horz_loc + 1 == new_horz_loc )|| (current_horz_loc - 1 == new_horz_loc))
             return true
         else
+            puts "Piece move not valid"
             return false
         end
     end
