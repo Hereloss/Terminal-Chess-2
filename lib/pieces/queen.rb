@@ -1,3 +1,6 @@
+require 'colorize'
+require 'colorized_string'
+
 class Queen
     def initialize(colour,location)
         @living = "Y"
@@ -25,7 +28,7 @@ class Queen
 
     def move(coords)
         moves = {:alive => @living, :colour => @colour, :valid => move_valid?(coords)}
-        return moves
+        return move_valid?(coords)
     end
 
     def confirm(coords)

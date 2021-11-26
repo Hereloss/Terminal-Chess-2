@@ -1,6 +1,8 @@
 require_relative './pieces/pieces.rb'
 require_relative './board.rb'
 require_relative './judge.rb'
+require 'colorize'
+require 'colorized_string'
 
 class Board_Controller
 
@@ -14,7 +16,7 @@ class Board_Controller
     def initialize
         @piece_controller = Pieces.new
         @board = Board.new
-        @judge = Judge.new(@board)
+        @judge = Judge.new(@board,@piece_controller)
     end
 
     def pieces_black_exist?
@@ -165,8 +167,27 @@ class Board_Controller
         return valid
     end
 
-    def check?
-        return false
+    def check?(in_check = false,move_to = nil,colour)
+        if in_check == true
+            return @judge.piece_moving_in_check(move_to,colour)
+        elsif in_check == false
+            pieces_putting_in_check = @judge.check?(colour)
+            if pieces_putting_in_check.empty?
+                return false
+            else
+                if colour == "White"
+                    king_location = @piece_controller.location_king("Black")
+                elsif colour == "Black"
+                    king_location = @piece_controller.location_king("White")
+                end
+                puts pieces_putting_in_check
+                confirm = gets.chomp
+                pieces_putting_in_check.each do |object|
+                    return true if ray_trace_control(object.location,king_location)
+                end
+                return false
+            end
+        end
     end
 
     def checkmate?

@@ -4,6 +4,8 @@ require_relative './queen.rb'
 require_relative './bishop.rb'
 require_relative './king.rb'
 require_relative './knight.rb'
+require 'colorize'
+require 'colorized_string'
 
 class Pieces
 
@@ -82,6 +84,14 @@ class Pieces
         elsif colour == "Black"
             piece = @pieces_location_black[loc]
             return piece_object = @pieces_black[piece]
+        end
+    end
+
+    def location_king(colour)
+        if colour == "White"
+            return @pieces_location_white.key("K")
+        elsif colour == "Black"
+            return @pieces_location_black.key("K")
         end
     end
 

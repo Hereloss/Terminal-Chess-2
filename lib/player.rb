@@ -1,3 +1,6 @@
+require 'colorize'
+require 'colorized_string'
+
 class Player
 
   attr_reader :is_my_turn, :colour
@@ -22,6 +25,7 @@ class Player
     start_turn
     puts "Please enter a move in the format: Piece, Position From, Position To"
     puts "Please input moves in the format (A,3)"
+    puts "This is #{@colour}s turn"
     puts "An example input would be: Bishop,(A,3),(A,5)"
     move = move_input
     if move.length != 5
@@ -39,11 +43,15 @@ class Player
 
   def move_input
     input = gets.chomp
+    if input == "Surrender"
+      puts "#{colour} surrenders! The other player wins by default!"
+      exit
+    end
     return input.split(",")
   end
 
   def check_typing(move)
-    @letters = ["A","B","C","D","E","F","G"]
+    @letters = ["A","B","C","D","E","F","G","H"]
     @numbers = (1..8)
     unless ((@letters.include?(move[1][1])) && (@letters.include?(move[3][1])) && 
       (@numbers.include?(move[2][0].to_i)) && (@numbers.include?(move[4][0].to_i)))

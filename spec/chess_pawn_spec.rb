@@ -51,22 +51,10 @@ describe Pawn do
         expect(pawn.valid?(@located,previous,false)).to eq(true).or eq(false)
     end
 
-    it "A pawn when given a move will return if it is alive or dead" do
-        coords = []
-        taking = true
-        expect(Pawn.new("White",["A",5]).move(coords,taking)[:alive]).to eq("Y").or eq("N")
-    end
-
     it "A pawn when given a move will confirm if the move is valid" do
         coords = []
         taking = true
-        expect(Pawn.new("White",["A",5]).move(coords,taking)[:valid]).to eq(true).or eq(false)
-    end
-
-    it "A pawn when given a move will confirm its colour" do
-        coords = []
-        taking = true
-        expect(Pawn.new("White",["A",5]).move(coords,taking)[:colour]).to eq("White").or eq("Black")
+        expect(Pawn.new("White",["A",5]).move(coords,taking)).to eq(true).or eq(false)
     end
 
     it "A move is valid if it is within 1 space vertically up  of the piece's current postition if the piece is white" do
@@ -79,7 +67,7 @@ describe Pawn do
     end 
 
     it "A move is valid if it is within 1 space vertically down of the piece's current postition if the piece is black" do
-        piece_2 = Pawn.new("White",["A",5])
+        piece_2 = Pawn.new("Black",["A",5])
         @located = piece_2.location
         if piece_2.colour == "Black"
             previous = piece_2.previous?
@@ -99,7 +87,7 @@ describe Pawn do
     end
 
     it "If it is the pawn's first turn, moves within 2 down spaces are valid if black" do
-        piece_4 = Pawn.new("White",["A",5])
+        piece_4 = Pawn.new("Black",["A",5])
         @located = piece_4.location
         previous = false
         colour = piece_4.colour
@@ -137,21 +125,21 @@ describe Pawn do
     it "Pawn applies the new position and confirms the validity" do
         pawn = Pawn.new("White",["A",5])
         @located = pawn.location
-        expect(pawn.move([@located[0],@located[1] + 1],false)).to include(:alive => "Y", :colour => 'White', :valid => true)
+        expect(pawn.move([@located[0],@located[1] + 1],false)).to eq true
     end
 
     it "If a pawn is taking, a single diagonal move down is valid for blacK" do
         pawn = Pawn.new("Black",["C",5])
         @located = ["C",5]
-        expect(pawn.move(["D",4],true)).to include(:alive => "Y", :colour => 'Black', :valid => true)
-        expect(pawn.move(["B",4],true)).to include(:alive => "Y", :colour => 'Black', :valid => true)
+        expect(pawn.move(["D",4],true)).to eq true
+        expect(pawn.move(["B",4],true)).to eq true
     end
 
     it "If a pawn is taking, a single diagonal move up is valid for white" do
         pawn = Pawn.new("White",["C",5])
         @located = ["C",5]
-        expect(pawn.move(["D",6],true)).to include(:alive => "Y", :colour => 'White', :valid => true)
-        expect(pawn.move(["B",6],true)).to include(:alive => "Y", :colour => 'White', :valid => true)
+        expect(pawn.move(["D",6],true)).to eq true
+        expect(pawn.move(["B",6],true)).to eq true
     end
 
     it "Once a move is confirmed, a pawn updates it's current position" do

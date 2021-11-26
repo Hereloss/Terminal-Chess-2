@@ -47,14 +47,14 @@ describe Board_Controller do
         board_control = Board_Controller.new
         locations = board_control.pieces_location_white
         unfilled_position = ["C",4]
-        expect(subject.move_control_valid?(unfilled_position,unfilled_position,"White")).to eq(false)
+        expect(subject.move_control_valid?(unfilled_position,unfilled_position,"White",false)).to eq(false)
     end
 
     it 'Will return invalid move if there is a piece of that colour in the new position' do
         board_control = Board_Controller.new
         locations = board_control.piece_controller.pieces_location_white
         filled_position = locations.key("P1")
-        expect(subject.move_control_valid?(filled_position,filled_position,"White")).to eq(false)
+        expect(subject.move_control_valid?(filled_position,filled_position,"White",false)).to eq(false)
     end
 
     it "Will return in one method if the above 3 tests are valid" do
@@ -89,9 +89,9 @@ describe Board_Controller do
             (1..8).each do |num|
                 unfilled_position = [let,num]
                 if pawn.move(unfilled_position,false) == true
-                    expect (board_control.piece_check).to eq true
+                    expect (board_control.piece_check(unfilled_position)).to eq true
                 elsif pawn.move(unfilled_position,false) == false
-                    expect (board_control.piece_check).to eq false
+                    expect (board_control.piece_check(unfilled_position)).to eq false
                 end
             end
         end
@@ -109,9 +109,9 @@ describe Board_Controller do
         end_position = locations_b.key("P1")
         tracing = board_control.board.ray_trace(start_position,end_position)
         if (tracing == true) && (board_control.first_3_move_checks(locations_w, locations_b,"White") == true) && (board_control.piece_check(locations_w, locations_b,"White") == true)
-            expect(board_control.move_control_valid?(locations_w, locations_b,"White")).to eq true
+            expect(board_control.move_control_valid?(locations_w, locations_b,"White",false)).to eq true
         elsif (tracing == false) || (board_control.first_3_move_checks(locations_w, locations_b,"White") == false) || (board_control.piece_check(locations_w, locations_b,"White") == false)
-            expect(board_control.move_control_valid?(locations_w, locations_b,"White")).to eq false
+            expect(board_control.move_control_valid?(locations_w, locations_b,"White",false)).to eq false
         end
     end
 
@@ -121,7 +121,7 @@ describe Board_Controller do
         start_position = locations_w.key("P1")
         locations_b = board_control.piece_controller.pieces_location_black
         end_position = locations_b.key("P1")
-        if board_control.move_control_valid?(start_position, end_position,"White") == true
+        if board_control.move_control_valid?(start_position, end_position,"White",false) == true
             piece = board_control.piece_controller.pieces_white["P1"]
             expect(piece.location).to eq(end_position)
         end
@@ -133,7 +133,7 @@ describe Board_Controller do
         start_position = locations_w.key("P1")
         locations_b = board_control.piece_controller.pieces_location_black
         end_position = locations_b.key("P1")
-        if board_control.move_control_valid?(start_position, end_position,"White") == true
+        if board_control.move_control_valid?(start_position, end_position,"White",false) == true
             piece = board_control.piece_controller.pieces_white["P1"]
             expect(board_control.piece_controller.pieces_location_white[end_position]).to eq "P1"
         end
@@ -145,7 +145,7 @@ describe Board_Controller do
         start_position = locations_w.key("P1")
         locations_b = board_control.piece_controller.pieces_location_black
         end_position = locations_b.key("P1")
-        if board_control.move_control_valid?(start_position, end_position,"White") == true
+        if board_control.move_control_valid?(start_position, end_position,"White",false) == true
             piece = board_control.piece_controller.pieces_black["P1"]
             expect(board_control.piece_controller.pieces_location_black[end_position]).to eq "None"
         end
@@ -153,10 +153,10 @@ describe Board_Controller do
 
     it "When passed in a move, will return true if the move is valid and false if it is not" do
         board_control = Board_Controller.new
-        expect(board_control.player_makes_move(["A",2],["A",3],"White")[0]).to eq true
-        expect(board_control.player_makes_move(["A",7],["A",6],"Black")[0]).to eq true
-        expect(board_control.player_makes_move(["A",7],["A",6],"White")[0]).to eq false
-        expect(board_control.player_makes_move(["A",2],["A",3],"Black")[0]).to eq false
+        expect(board_control.player_makes_move(["A",2],["A",3],"White",false)).to eq true
+        expect(board_control.player_makes_move(["A",7],["A",6],"Black",false)).to eq true
+        expect(board_control.player_makes_move(["A",7],["A",6],"White",false)).to eq false
+        expect(board_control.player_makes_move(["A",2],["A",3],"Black",false)).to eq false
     end
 
     it "If asked for the board, will get this from the board object and return this" do
@@ -171,6 +171,21 @@ describe Board_Controller do
         expect(board_control.piece_at_position_no_colour(["A",5])).to eq(["None","N/A"])
     end
 
-    it "If asked if check, has a method to confirm this" do
+    it "If asked if check, will pass this onto the Judge" do
+    end
+
+    it "If asked if in check when neither player is in check, will check for the next player" do
+    end
+
+    it "If no pieces can move to the king, will return false for in check" do
+    end
+
+    it "If a piece can move to the king, will ray-trace this" do
+    end
+
+    it "If a piece can move to the king and the ray-trace is clear, the next player is in check" do
+    end
+
+    it "Has a method to return checkmate if checkmate" do
     end
 end

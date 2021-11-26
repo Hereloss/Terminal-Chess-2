@@ -15,7 +15,7 @@ class Game_Controller
     puts "Welcome To Chess!"
     puts "What would you like to do?"
     @rule_read = 0
-    @who_is_in_check = "None"
+    @who_is_in_check = "Noone"
     @current_color = "White"
     menu
   end
@@ -62,8 +62,9 @@ class Game_Controller
     when "White"
       system "clear"
       @board_controller.board.board.each do |arr|
-        p arr
+        puts "#{arr[0]} #{arr[1]} #{arr[2]} #{arr[3]} #{arr[4]} #{arr[5]} #{arr[6]} #{arr[7]} #{arr[8]}"
       end
+      puts "#{@who_is_in_check} is in check!"
       turn_take("White")
       @current_colour = "Black"
       colour = "Black"
@@ -71,8 +72,9 @@ class Game_Controller
     when "Black"
       system "clear"
       @board_controller.board.board.each do |arr|
-        p arr
+        puts "#{arr[0]} #{arr[1]} #{arr[2]} #{arr[3]} #{arr[4]} #{arr[5]} #{arr[6]} #{arr[7]} #{arr[8]}"
       end
+      puts "#{@who_is_in_check} is in check!"
       turn_take("Black")
       @current_colour = "White"
       colour = "White"
@@ -101,12 +103,17 @@ class Game_Controller
   end
 
   def check(colour)
-    in_check = board_controller.check?
+    @who_is_in_check = "Noone"
+    in_check = board_controller.check?(false,nil,colour)
     if in_check == true
       if board_controller.checkmate? 
         player_wins(colour)
       end
-      @who_is_in_check = colour
+      if colour == "White"
+        @who_is_in_check = "Black"
+      elsif colour == "Black"
+        @who_is_in_check = "White"
+      end
     end
   end
 

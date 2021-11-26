@@ -1,3 +1,6 @@
+require 'colorize'
+require 'colorized_string'
+
 class Pawn
 
     def initialize(colour,location)

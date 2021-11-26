@@ -1,22 +1,25 @@
+require 'colorize'
+require 'colorized_string'
+
 class Board
 
     attr_reader :board
 
     def initialize
-        @board = [[8, "R","N","B","Q","K","B","N","R"],
-                 [7, "P","P","P","P","P","P","P","P"],
-                 [6, "O","X","O","X","O","X","O","X"],
-                 [5, "X","O","X","O","X","O","X","O"],
-                 [4, "O","X","O","X","O","X","O","X"],
-                 [3, "X","O","X","O","X","O","X","O"],
+        @board = [[8, "R".red,"N".red,"B".red,"Q".red,"K".red,"B".red,"N".red,"R".red],
+                 [7, "P".red,"P".red,"P".red,"P".red,"P".red,"P".red,"P".red,"P".red],
+                 [6, "O".light_black,"X".light_black,"O".light_black,"X".light_black,"O".light_black,"X".light_black,"O".light_black,"X".light_black],
+                 [5, "X".light_black,"O".light_black,"X".light_black,"O".light_black,"X".light_black,"O".light_black,"X".light_black,"O".light_black],
+                 [4, "O".light_black,"X".light_black,"O".light_black,"X".light_black,"O".light_black,"X".light_black,"O".light_black,"X".light_black],
+                 [3, "X".light_black,"O".light_black,"X".light_black,"O".light_black,"X".light_black,"O".light_black,"X".light_black,"O".light_black],
                  [2, "P","P","P","P","P","P","P","P"],
                  [1, "R","N","B","Q","K","B","N","R"],
-                 [0, "A","B","C","D","E","F","G","H"]]
+                 [0, "A".green,"B".green,"C".green,"D".green,"E".green,"F".green,"G".green,"H".green]]
     end
 
     def whats_there(coords)
         coordinates = coords
-        unless ((@board[coordinates[0]][coordinates[1]] == "X") || (@board[coordinates[0]][coordinates[1]] == "O"))
+        unless ((@board[coordinates[0]][coordinates[1]] == "\e[0;90;49mX\e[0m") || (@board[coordinates[0]][coordinates[1]] == "\e[0;90;49mO\e[0m"))
             return @board[coordinates[0]][coordinates[1]]
         else
             return "E"
@@ -126,10 +129,14 @@ class Board
         end
     end
 
-    def ray_trace(from,to)
+    def ray_trace(from,to,for_check = false)
         direction = compass(from,to)
         puts direction
-        return ray_empty?(from,to,direction)
+        if for_check == false
+            return ray_empty?(from,to,direction)
+        elsif for_check == true
+            return ray_empty_for_check(from,to_loc,direction)
+        end
     end
 
     def compass(to,from)
@@ -169,9 +176,104 @@ class Board
         @board[move_to[0]][move_to[1]] = piece_at_old_location
         parity = (move_from[0].to_i + move_from[1].to_i) % 2
         if parity == 0
-            @board[move_from[0]][move_from[1]] = "X"
+            @board[move_from[0]][move_from[1]] = "X".light_black
         elsif parity == 1
-            @board[move_from[0]][move_from[1]] = "O"
+            @board[move_from[0]][move_from[1]] = "O".light_black
+        end
+    end
+
+    def ray_empty_for_check(from,to_loc,direction)
+        current = converter(from)
+        to = converter(to_loc)
+        case direction
+        when "up"
+            current[0] -= 1
+            until current == to
+                if whats_there(current) != "E"
+                    puts "Ray not clear"
+                    return [false,whats_there(current),current,direction]
+                end
+                current[0] -= 1
+            end
+            return true
+        when "down"
+            current[0] += 1
+            until current == to
+                if whats_there(current) != "E"
+                    puts "Ray not clear"
+                    return [false,whats_there(current),current,direction]
+                end
+                current[0] += 1
+            end
+            return true
+        when "left"
+            current[1] -= 1
+            until current == to
+                if whats_there(current) != "E"
+                    puts "Ray not clear"
+                    return [false,whats_there(current),current,direction]
+                end
+                current[1] -= 1
+            end
+            return true
+        when "right"
+            current[1] += 1
+            until current == to
+                if whats_there(current) != "E"
+                    puts "Ray not clear"
+                    return [false,whats_there(current),current,direction]
+                end
+                current[1] += 1
+            end
+            return true
+        when "up_right"
+            current[0] -= 1
+            current[1] += 1
+            until current == to
+                if whats_there(current) != "E"
+                    puts "Ray not clear"
+                    return [false,whats_there(current),current,direction]
+                end
+                current[0] -= 1
+                current[1] += 1
+            end
+            return true
+        when "up_left"
+            current[0] -= 1
+            current[1] -= 1
+            until current == to
+                if whats_there(current) != "E"
+                    puts "Ray not clear"
+                    return [false,whats_there(current),current,direction]
+                end
+                current[0] -= 1
+                current[1] -= 1
+            end
+            return true
+        when "down_right"
+            current[0] += 1
+            current[1] += 1
+            until current == to
+                if whats_there(current) != "E"
+                    puts "Ray not clear"
+                    return [false,whats_there(current),current,direction]
+                end
+                current[0] += 1
+                current[1] += 1
+            end
+            return true
+        when "down_left"
+            current[0] += 1
+            current[1] -= 1
+            until current == to
+                if whats_there(current) != "E"
+                    puts "Ray not clear"
+                    return [false,whats_there(current),current,direction]
+                end
+                current[0] += 1
+                current[1] -= 1
+            end
+            return true
         end
     end
 end

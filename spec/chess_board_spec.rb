@@ -65,7 +65,7 @@ describe Board do
         board = Board.new
         board.update_board(["A",2],["A",3])
         expect(board.board[5][1]).to eq("P")
-        expect(board.board[6][1]).to eq("O")
+        expect(board.board[6][1]).to eq("\e[0;90;49mO\e[0m")
     end
 
     it "Can confirm if the King is in check using a ray-trace" do
