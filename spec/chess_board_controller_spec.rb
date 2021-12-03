@@ -171,13 +171,57 @@ describe Board_Controller do
         expect(board_control.piece_at_position_no_colour(["A",5])).to eq(["None","N/A"])
     end
 
+    it "Will remove a piece when it has been taken for Black" do
+        piece = double()
+        allow(piece).to receive(:kill).and_return(true)
+        allow(piece).to receive(:confirm).and_return(true)
+        piece_controller = double()
+        allow(piece_controller).to receive(:piece_id_from_location).and_return(piece)
+        allow(piece_controller).to receive(:pieces_location_white).and_return({1 => "Dummy"})
+        allow(piece_controller).to receive(:pieces_white).and_return({1 => "Dummy"})
+        board_controller = (Board_Controller.new(piece_controller))
+        expect(piece_controller).to receive(:piece_id_from_location)
+        expect(piece_controller).to receive(:pieces_white)
+        expect(piece_controller).to receive(:pieces_location_white)
+        expect(piece).to receive(:kill)
+        expect(piece).to receive(:confirm)
+        expect(board_controller.remove_piece(["A",3],"Black")).to eq "None"
+    end
+
+    it "Will remove a piece when it has been taken for White" do
+        piece = double()
+        allow(piece).to receive(:kill).and_return(true)
+        allow(piece).to receive(:confirm).and_return(true)
+        piece_controller = double()
+        allow(piece_controller).to receive(:piece_id_from_location).and_return(piece)
+        allow(piece_controller).to receive(:pieces_location_black).and_return({1 => "Dummy"})
+        allow(piece_controller).to receive(:pieces_black).and_return({1 => "Dummy"})
+        board_controller = (Board_Controller.new(piece_controller))
+        expect(piece_controller).to receive(:piece_id_from_location)
+        expect(piece_controller).to receive(:pieces_black)
+        expect(piece_controller).to receive(:pieces_location_black)
+        expect(piece).to receive(:kill)
+        expect(piece).to receive(:confirm)
+        expect(board_controller.remove_piece(["A",3],"White")).to eq "None"
+    end
+
     it "If asked if check, will pass this onto the Judge" do
+        board = double()
+        piece_controller = double()
+        judge = double()
+        board_controller = (Board_Controller.new(piece_controller,board,judge))
     end
 
     it "If asked if in check when neither player is in check, will check for the next player" do
     end
 
     it "If no pieces can move to the king, will return false for in check" do
+        board = double()
+        piece_controller = double()
+        judge = double()
+        allow(judge).to receive(:check?).and_return([])
+        board_controller = (Board_Controller.new(piece_controller,board,judge))
+        expect(board_controller.check?(false,nil,"White")).to eq false
     end
 
     it "If a piece can move to the king, will ray-trace this" do
@@ -187,5 +231,6 @@ describe Board_Controller do
     end
 
     it "Has a method to return checkmate if checkmate" do
+        expect(subject.checkmate?).to eq(true).or eq(false)
     end
 end

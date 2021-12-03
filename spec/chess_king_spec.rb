@@ -49,14 +49,8 @@ describe King do
 
     it "A King when given a move will confirm if the move is valid" do
         coords = []
-        expect(King.new("White",["A",5]).move(coords)[:valid]).to eq(true).or eq(false)
+        expect(King.new("White",["A",5]).move(coords)).to eq(true).or eq(false)
     end
-
-    it "A King when given a move will confirm its colour" do
-        coords = []
-        expect(King.new("White",["A",5]).move(coords)[:colour]).to eq("White").or eq("Black")
-    end
-
 
     it "A move is valid if it is within 1 space around of the piece's current postition " do
         piece = King.new("White",["C",5])
@@ -84,7 +78,7 @@ describe King do
     it "King applies the new position and confirms the validity" do
         king = King.new("White",["A",5])
         @located = king.location
-        expect(king.move([@located[0],@located[1] + 1])).to include(:alive => "Y", :colour => 'White', :valid => true)
+        expect(king.move([@located[0],@located[1] + 1])).to eq true
     end
 
     it "Once a move is confirmed, a King updates it's current position" do

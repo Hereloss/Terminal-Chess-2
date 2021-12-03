@@ -19,7 +19,6 @@ class Judge
   #Section editing!
   def check?(colour)
     @piece_putting_in_check = []
-    @king_location = @piece_controller.location_king(colour)
     if colour == "White"
       @king_location = @piece_controller.location_king("Black")
       return check_valid_move_checking_black

@@ -49,14 +49,8 @@ describe Knight do
 
     it "A Knight when given a move will confirm if the move is valid" do
         coords = []
-        expect(Knight.new("White",["A",5]).move(coords)[:valid]).to eq(true).or eq(false)
+        expect(Knight.new("White",["A",5]).move(coords)).to eq(true).or eq(false)
     end
-
-    it "A Knight when given a move will confirm its colour" do
-        coords = []
-        expect(Knight.new("White",["A",5]).move(coords)[:colour]).to eq("White").or eq("Black")
-    end
-
 
     it "A move is valid if it is an L Shape around of the piece's current postition " do
         piece = Knight.new("White",["C",5])
@@ -88,7 +82,7 @@ describe Knight do
     it "Knight applies the new position and confirms the validity" do
         knight = Knight.new("White",["A",5])
         @located = knight.location
-        expect(knight.move(["B",@located[1] + 2])).to include(:alive => "Y", :colour => 'White', :valid => true)
+        expect(knight.move(["B",@located[1] + 2])).to eq true
     end
 
     it "Once a move is confirmed, a Knight updates it's current position" do

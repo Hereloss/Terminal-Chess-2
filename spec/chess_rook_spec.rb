@@ -49,14 +49,8 @@ describe Rook do
 
     it "A Rook when given a move will confirm if the move is valid" do
         coords = []
-        expect(Rook.new("White",["A",5]).move(coords)[:valid]).to eq(true).or eq(false)
+        expect(Rook.new("White",["A",5]).move(coords)).to eq(true).or eq(false)
     end
-
-    it "A Rook when given a move will confirm its colour" do
-        coords = []
-        expect(Rook.new("White",["A",5]).move(coords)[:colour]).to eq("White").or eq("Black")
-    end
-
 
     it "A move is valid if it is if it is in a vertical line of the piece " do
         piece = Rook.new("White",["C",5])
@@ -82,8 +76,8 @@ describe Rook do
     it "Rook applies the new position and confirms the validity" do
         rook = Rook.new("White",["A",5])
         @located = rook.location
-        expect(rook.move(["B",@located[1]])).to include(:alive => "Y", :colour => 'White', :valid => true)
-        expect(rook.move(["A",6])).to include(:alive => "Y", :colour => 'White', :valid => true)
+        expect(rook.move(["B",@located[1]])).to eq true
+        expect(rook.move(["A",6])).to eq true
     end
 
     it "Once a move is confirmed, a Rook updates it's current position" do

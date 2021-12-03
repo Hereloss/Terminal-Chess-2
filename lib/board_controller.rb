@@ -13,10 +13,14 @@ class Board_Controller
     attr_reader :board
     attr_reader :piece_controller
 
-    def initialize
-        @piece_controller = Pieces.new
-        @board = Board.new
-        @judge = Judge.new(@board,@piece_controller)
+    def initialize(piece_controller = Pieces.new,board = Board.new,judge = Judge.new(@board,@piece_controller))
+        @piece_controller = piece_controller
+        @board = board
+        create_judge(judge)
+    end
+
+    def create_judge(judge)
+        @judge = judge
     end
 
     def pieces_black_exist?

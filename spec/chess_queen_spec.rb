@@ -49,14 +49,8 @@ describe Queen do
 
     it "A Queen when given a move will confirm if the move is valid" do
         coords = []
-        expect(Queen.new("White",["A",5]).move(coords)[:valid]).to eq(true).or eq(false)
+        expect(Queen.new("White",["A",5]).move(coords)).to eq(true).or eq(false)
     end
-
-    it "A Queen when given a move will confirm its colour" do
-        coords = []
-        expect(Queen.new("White",["A",5]).move(coords)[:colour]).to eq("White").or eq("Black")
-    end
-
 
     it "A move is valid if it is if it is in a diagonal line of the piece " do
         piece = Queen.new("White",["C",5])
@@ -94,10 +88,10 @@ describe Queen do
     it "Queen applies the new position and confirms the validity" do
         queen = Queen.new("White",["C",5])
         @located = queen.location
-        expect(queen.move(["B",6])).to include(:alive => "Y", :colour => 'White', :valid => true)
-        expect(queen.move(["D",4])).to include(:alive => "Y", :colour => 'White', :valid => true)
-        expect(queen.move(["B",@located[1]])).to include(:alive => "Y", :colour => 'White', :valid => true)
-        expect(queen.move(["C",6])).to include(:alive => "Y", :colour => 'White', :valid => true)
+        expect(queen.move(["B",6])).to eq true
+        expect(queen.move(["D",4])).to eq true
+        expect(queen.move(["B",@located[1]])).to eq true
+        expect(queen.move(["C",6])).to eq true
     end
 
     it "Once a move is confirmed, a Queen updates it's current position" do

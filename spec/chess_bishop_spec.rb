@@ -49,12 +49,7 @@ describe Bishop do
 
     it "A Bishop when given a move will confirm if the move is valid" do
         coords = []
-        expect(Bishop.new("White",["A",5]).move(coords)[:valid]).to eq(true).or eq(false)
-    end
-
-    it "A Bishop when given a move will confirm its colour" do
-        coords = []
-        expect(Bishop.new("White",["A",5]).move(coords)[:colour]).to eq("White").or eq("Black")
+        expect(Bishop.new("White",["A",5]).move(coords)).to eq(true).or eq(false)
     end
 
 
@@ -87,8 +82,8 @@ describe Bishop do
     it "Bishop applies the new position and confirms the validity" do
         bishop = Bishop.new("White",["C",5])
         @located = bishop.location
-        expect(bishop.move(["B",6])).to include(:alive => "Y", :colour => 'White', :valid => true)
-        expect(bishop.move(["D",4])).to include(:alive => "Y", :colour => 'White', :valid => true)
+        expect(bishop.move(["B",6])).to eq true
+        expect(bishop.move(["D",4])).to eq true
     end
 
     it "Once a move is confirmed, a Bishop updates it's current position" do
