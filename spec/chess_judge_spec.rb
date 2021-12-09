@@ -5,14 +5,14 @@ describe Judge do
   before do
     @board = double :board
     #working on this double! Also do board double
-    @piece1 = double :piece, move: true
-    @piece2 = double :piece, move: true
-    @piece3 = double :piece, move: false
-    @piece4 = double :piece, move: false
-    @piece5 = double :piece, move: true
-    @piece6 = double :piece, move: true
-    @piece7 = double :piece, move: false
-    @piece8 = double :piece, move: false
+    @piece1 = double :piece1, move: true
+    @piece2 = double :piece2, move: true
+    @piece3 = double :piece3, move: false
+    @piece4 = double :piece4, move: false, is_a?: Pawn
+    @piece5 = double :piece5, move: true
+    @piece6 = double :piece6, move: true, is_a?: Pawn
+    @piece7 = double :piece7, move: false
+    @piece8 = double :piece8, move: false
     @black_locations = {1 => @piece5,2 => @piece6,3 =>@piece7,4 => @piece8}
     @white_locations = {1 => @piece1,2 => @piece2,3 =>@piece3,4 => @piece4}
     @king_location = ["A",3]
@@ -24,24 +24,13 @@ describe Judge do
     expect(@judge).to respond_to :check?
   end
 
-  it "Will check each individual piece if it puts the king into check" do
-    piece = double :piece, move: true
-    expect(@judge.puts_king_in_check?("move", piece)).to eq true
-    piece2 = double :piece, move:false, is_a?:Pawn
-    expect(@judge.puts_king_in_check?("move", piece2)).to eq false
-  end
-
   it "Will check all the white pieces putting the black king in check for black" do
-    expect(@judge).to receive(:check_valid_move_checking_white)
-    expect(@judge).to receive(:puts_king_in_check)
     @judge.check?("Black")
-    # expect(@judge.check?("Black")).to eq([@piece1,@piece2])
+    expect(@judge.check?("Black")).to eq([@piece5,@piece6])
   end
 
   it "Will check all the black pieces putting the white king in check for white" do
-    expect(@judge).to receive(:check_valid_move_checking_black)
-    expect(@judge).to receive(:puts_king_in_check)
     @judge.check?("White")
-    # expect(@judge.check?("White")).to eq([@piece5,@piece6])
+    expect(@judge.check?("White")).to eq([@piece1, @piece2])
   end
 end

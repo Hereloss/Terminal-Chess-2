@@ -13,13 +13,14 @@ class Board_Controller
     attr_reader :board
     attr_reader :piece_controller
 
-    def initialize(piece_controller = Pieces.new,board = Board.new,judge = Judge.new(@board,@piece_controller))
+    def initialize(piece_controller = Pieces.new,board = Board.new,judge = Judge.new(@board,piece_controller))
         @piece_controller = piece_controller
         @board = board
         create_judge(judge)
     end
 
     def create_judge(judge)
+        piece_controller = @piece_controller
         @judge = judge
     end
 
@@ -51,16 +52,7 @@ class Board_Controller
             end
             case (piece_check(move_to) && ray)
             when true
-                # if in_check == colour
-                #     if check? == true
-                #         return false
-                #     else    
-                    piece_control(move_from,move_to,colour)
-                #     return true
-                #     end
-                # else
-                    return true
-                # end
+                    return piece_control(move_from,move_to,colour)
             when false
                 return false
             end
@@ -125,11 +117,40 @@ class Board_Controller
     end
 
     def piece_control(from,to,colour)
-        if @taking == true
-            remove_piece(to,colour)
-        end
         @piece_moving.confirm(to)
         update_hash(from,to,colour)
+        @board.update_board(from,to)
+        if check_control(from,to,colour) == false
+            puts "That puts you in check - you can't make that move!"
+            return false
+        else
+            if @taking == true
+                remove_piece(to,colour)
+            end
+            return true
+        end
+    end
+
+    def check_control(from,to,colour)
+        if colour == "White"
+            if check?(false, to, "Black") == true
+                update_hash(to,from,colour)
+                @piece_moving.confirm(from)
+                @board.update_board(to,from)
+                return false
+            else
+                return true
+            end
+        elsif colour = "Black"
+            if check?(false, to, "White") == true
+                update_hash(to,from,colour)
+                @piece_moving.confirm(from)
+                @board.update_board(to,from)
+                return false
+            else
+                return true
+            end
+        end
     end
 
     def remove_piece(loc,colour)
@@ -164,17 +185,13 @@ class Board_Controller
 
     def player_makes_move(from,to,colour,in_check)
         valid = move_control_valid?(from,to,colour,in_check)
-        if valid == true
-            @board.update_board(from,to)
-        end
-        # outcome = [valid,colour,@board]
         return valid
     end
 
     def check?(in_check = false,move_to = nil,colour)
-        if in_check == true
-            return @judge.piece_moving_in_check(move_to,colour)
-        elsif in_check == false
+        # if in_check == true
+        #     return @judge.piece_moving_in_check(move_to,colour)
+        # elsif in_check == false
             pieces_putting_in_check = @judge.check?(colour)
             if pieces_putting_in_check.empty?
                 return false
@@ -191,7 +208,7 @@ class Board_Controller
                 end
                 return false
             end
-        end
+        # end
     end
 
     def checkmate?

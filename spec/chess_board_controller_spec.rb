@@ -79,24 +79,6 @@ describe Board_Controller do
         expect(subject).to respond_to :piece_check
     end
 
-    it "If the piece is valid, will receive this from the piece" do
-        board_control = Board_Controller.new
-        locations = board_control.piece_controller.pieces_location_white
-        pawn = board_control.piece_controller.pieces_white["P1"]
-        filled_position = locations.key("P1")
-        @letters = ["A","B","C","D","E","F","G","H"]
-        @letters.each do |let|
-            (1..8).each do |num|
-                unfilled_position = [let,num]
-                if pawn.move(unfilled_position,false) == true
-                    expect (board_control.piece_check(unfilled_position)).to eq true
-                elsif pawn.move(unfilled_position,false) == false
-                    expect (board_control.piece_check(unfilled_position)).to eq false
-                end
-            end
-        end
-    end
-
     it "If a move is deemed valid by the piece, ask the board for a ray-trace" do
         expect(subject).to respond_to :ray_trace_control
     end
