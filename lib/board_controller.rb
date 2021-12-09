@@ -122,11 +122,15 @@ class Board_Controller
         @board.update_board(from,to)
         if check_control(from,to,colour) == false
             puts "That puts you in check - you can't make that move!"
+            puts @piece_controller.pieces_location_white
+            puts @piece_controller.pieces_location_black
             return false
         else
             if @taking == true
                 remove_piece(to,colour)
             end
+            puts @piece_controller.pieces_location_white
+            puts @piece_controller.pieces_location_black
             return true
         end
     end

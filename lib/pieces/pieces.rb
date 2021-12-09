@@ -101,7 +101,7 @@ class Pieces
         when "P"
             case colour
             when "White"
-                if @pieces_location_white[position].nil?
+                if (@pieces_location_white[position].nil? || @pieces_location_black[position] == "None")
                     puts "No white piece at position"
                     return false
                 else
@@ -109,7 +109,7 @@ class Pieces
                     return true
                 end
             when "Black"
-                if @pieces_location_black[position].nil?
+                if (@pieces_location_black[position].nil? || @pieces_location_black[position] == "None")
                     puts "No black piece at position"
                     return false
                 else
