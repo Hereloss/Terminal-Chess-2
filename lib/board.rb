@@ -131,12 +131,7 @@ class Board
 
     def ray_trace(from,to,for_check = false)
         direction = compass(from,to)
-        puts direction
-        if for_check == false
-            return ray_empty?(from,to,direction)
-        elsif for_check == true
-            return ray_empty_for_check(from,to_loc,direction)
-        end
+        return ray_empty?(from,to,direction)
     end
 
     def compass(to,from)
@@ -182,98 +177,84 @@ class Board
         end
     end
 
-    def ray_empty_for_check(from,to_loc,direction)
+    def ray_return(from,to_loc,direction)
+        @check_ray = []
+        @check_ray << from
         current = converter(from)
         to = converter(to_loc)
         case direction
         when "up"
             current[0] -= 1
             until current == to
-                if whats_there(current) != "E"
-                    puts "Ray not clear"
-                    return [false,whats_there(current),current,direction]
-                end
+                vert_location = 8 - current[0]
+                @check_ray << [@letters[current[1] - 1],vert_location]
                 current[0] -= 1
             end
-            return true
+            return @check_ray
         when "down"
             current[0] += 1
             until current == to
-                if whats_there(current) != "E"
-                    puts "Ray not clear"
-                    return [false,whats_there(current),current,direction]
-                end
+                vert_location = 8 - current[0]
+                @check_ray << [@letters[current[1] - 1],vert_location]
                 current[0] += 1
             end
-            return true
+            return @check_ray
         when "left"
             current[1] -= 1
             until current == to
-                if whats_there(current) != "E"
-                    puts "Ray not clear"
-                    return [false,whats_there(current),current,direction]
-                end
+                vert_location = 8 - current[0]
+                @check_ray << [@letters[current[1] - 1],vert_location]
                 current[1] -= 1
             end
-            return true
+            return @check_ray
         when "right"
             current[1] += 1
             until current == to
-                if whats_there(current) != "E"
-                    puts "Ray not clear"
-                    return [false,whats_there(current),current,direction]
-                end
+                vert_location = 8 - current[0]
+                @check_ray << [@letters[current[1] - 1],vert_location]
                 current[1] += 1
             end
-            return true
+            return @check_ray
         when "up_right"
             current[0] -= 1
             current[1] += 1
             until current == to
-                if whats_there(current) != "E"
-                    puts "Ray not clear"
-                    return [false,whats_there(current),current,direction]
-                end
+                vert_location = 8 - current[0]
+                @check_ray << [@letters[current[1] - 1],vert_location]
                 current[0] -= 1
                 current[1] += 1
             end
-            return true
+            return @check_ray
         when "up_left"
             current[0] -= 1
             current[1] -= 1
             until current == to
-                if whats_there(current) != "E"
-                    puts "Ray not clear"
-                    return [false,whats_there(current),current,direction]
-                end
+                vert_location = 8 - current[0]
+                @check_ray << [@letters[current[1] - 1],vert_location]
                 current[0] -= 1
                 current[1] -= 1
             end
-            return true
+            return @check_ray
         when "down_right"
             current[0] += 1
             current[1] += 1
             until current == to
-                if whats_there(current) != "E"
-                    puts "Ray not clear"
-                    return [false,whats_there(current),current,direction]
-                end
+                vert_location = 8 - current[0]
+                @check_ray << [@letters[current[1] - 1],vert_location]
                 current[0] += 1
                 current[1] += 1
             end
-            return true
+            return @check_ray
         when "down_left"
             current[0] += 1
             current[1] -= 1
             until current == to
-                if whats_there(current) != "E"
-                    puts "Ray not clear"
-                    return [false,whats_there(current),current,direction]
-                end
+                vert_location = 8 - current[0]
+                @check_ray << [@letters[current[1] - 1],vert_location]
                 current[0] += 1
                 current[1] -= 1
             end
-            return true
+            return @check_ray
         end
     end
 end

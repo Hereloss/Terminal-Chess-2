@@ -52,4 +52,23 @@ describe Pieces do
         expect(pieces.piece_at_location(filled_position,"White","P")).to eq(true)
     end
 
+
+    it "Can check the king's valid move where it is in the middle of the board" do
+        pieces = Pieces.new
+        expect(pieces.king_valid_moves(["C",3])).to eq([["D", 2], ["B", 2], ["C", 2], ["D", 4], ["B", 4], ["C", 4], ["D", 3], ["B", 3], ["C", 3]])
+    end
+
+    it "Can check the king's vlaid moves where it is on the edge of the board" do
+        pieces = Pieces.new
+        expect(pieces.king_valid_moves(["A",3])).to eq([["B", 2], ["A", 2], ["B", 4], ["A", 4], ["B", 3], ["A", 3]])
+        expect(pieces.king_valid_moves(["C",1])).to eq([["D", 2], ["B", 2], ["C", 2], ["D", 1], ["B", 1], ["C", 1]])
+        expect(pieces.king_valid_moves(["C",8])).to eq([["D", 7], ["B", 7], ["C", 7], ["D", 8], ["B", 8], ["C", 8]])
+        expect(pieces.king_valid_moves(["H",4])).to eq([["G", 3], ["H", 3], ["G", 5], ["H", 5], ["G", 4], ["H", 4]])
+    
+    end
+
+    it "Can check the king's valid moves where it is in a corner" do
+        pieces = Pieces.new
+        expect(pieces.king_valid_moves(["A",1])).to eq([["B", 2], ["A", 2], ["B", 1], ["A", 1]])
+    end
 end

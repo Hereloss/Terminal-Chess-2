@@ -17,6 +17,7 @@ class Board_Controller
         @piece_controller = piece_controller
         @board = board
         create_judge(judge)
+        @piece_trying_to_escape = []
     end
 
     def create_judge(judge)
@@ -108,6 +109,11 @@ class Board_Controller
         end
     end
 
+    def set_a_pawn_for_test(bishop)
+        @piece_moving = bishop
+        @taking = false
+    end
+
     def ray_trace_control(from,to)
         return board.ray_trace(from,to)
     end
@@ -122,15 +128,11 @@ class Board_Controller
         @board.update_board(from,to)
         if check_control(from,to,colour) == false
             puts "That puts you in check - you can't make that move!"
-            puts @piece_controller.pieces_location_white
-            puts @piece_controller.pieces_location_black
             return false
         else
             if @taking == true
                 remove_piece(to,colour)
             end
-            puts @piece_controller.pieces_location_white
-            puts @piece_controller.pieces_location_black
             return true
         end
     end
@@ -145,7 +147,7 @@ class Board_Controller
             else
                 return true
             end
-        elsif colour = "Black"
+        elsif colour == "Black"
             if check?(false, to, "White") == true
                 update_hash(to,from,colour)
                 @piece_moving.confirm(from)
@@ -193,10 +195,9 @@ class Board_Controller
     end
 
     def check?(in_check = false,move_to = nil,colour)
-        # if in_check == true
-        #     return @judge.piece_moving_in_check(move_to,colour)
-        # elsif in_check == false
-            pieces_putting_in_check = @judge.check?(colour)
+         @ray_trace_and_puts_in_check = false
+        @piece_trying_to_escape = []
+        pieces_putting_in_check = @judge.check?(colour)
             if pieces_putting_in_check.empty?
                 return false
             else
@@ -205,18 +206,103 @@ class Board_Controller
                 elsif colour == "Black"
                     king_location = @piece_controller.location_king("White")
                 end
-                puts pieces_putting_in_check
-                confirm = gets.chomp
-                pieces_putting_in_check.each do |object|
-                    return true if ray_trace_control(object.location,king_location)
+            pieces_putting_in_check.each do |object|
+                if ray_trace_control(object.location,king_location)
+                    @ray_trace_and_puts_in_check = true
+                    @piece_trying_to_escape << object
                 end
-                return false
             end
-        # end
+            return @ray_trace_and_puts_in_check
+        end
     end
 
-    def checkmate?
-        return false
+    def checkmate?(colour)
+        @locations_to_block = []
+        @original_pieces_putting_king_in_check = @piece_trying_to_escape
+        if king_moving_out_of_check(colour) == true
+            puts "I think the king can escape!"
+            return false
+        else
+            puts "King can't get out!"
+            if @original_pieces_putting_king_in_check.length >= 2
+                puts "Too many pieces putting you in check!"
+                return true
+            elsif @original_pieces_putting_king_in_check.length == 0
+                puts "No pieces actually putting you in check!"
+                return false
+            else
+                puts "We have just one piece putting you in check!"
+                @checkmate = true
+                if (@original_pieces_putting_king_in_check[0]).is_a?(Knight)
+                    puts 'The piece is a knight!'
+                    @locations_to_block = [(@original_pieces_putting_king_in_check[0]).location]
+                else
+                    location = (@original_pieces_putting_king_in_check[0]).location
+                    direction = @board.compass(location,@king_location)
+                    @locations_to_block = @board.ray_return(location,@king_location,direction)
+                    puts @locations_to_block
+                end
+                if colour == "White"
+                    @piece_controller.pieces_white.each do |key, object|
+                        @locations_to_block.each do |location|
+                            if move_control_valid?(object.location,location,"White",false) == true
+                                puts "A piece can move there!"
+                                @checkmate = false
+                            end
+                        end
+                    end
+                elsif colour == "Black"
+                    @piece_controller.pieces_white.each do |key, object|
+                        @locations_to_block.each do |location|
+                            if move_control_valid?(object.location,location,"White",false) == true
+                                puts "A piece can move there!"
+                                @checkmate = false
+                            end
+                        end
+                    end
+                end
+                return @checkmate
+            end
+        end
+    end
+
+    def set_pieces_to_escape(bishop = "Bishop")
+        @piece_trying_to_escape << bishop
+        puts @piece_trying_to_escape
+    end
+
+    def king_moving_out_of_check(colour)
+        @king_location = @piece_controller.location_king(colour)
+        @king_valid_moves = @piece_controller.king_valid_moves(@king_location)
+        can_escape = false
+        @king_valid_moves.each do |move|
+            if move_control_valid?(@king_location, move,colour,false) == true
+                can_escape = true
+                update_hash(move,@king_location,colour)
+                @piece_moving.confirm(@king_location)
+                @board.update_board(move,@king_location)
+            end
+        end
+        puts can_escape
+        return can_escape
+    end
+
+    def queening
+        # ["A","B","C","D","E","F","G","H"].each do |letter|
+        #     if @piece_controller.pieces_location_white[letter,8][0] == "P"
+        #         piece = @piece_controller.pieces_location.location_white([letter,8])
+        #         @piece_controller.pieces_location_white[letter,8] = "PQ"
+        #         @piece_controller.pieces_white[piece] = Queen.new("White",letter,8)
+        #         converted_queen_location = @board.converter[letter,8]
+        #         @board.board[converted_queen_location[0]][converted_queen_location[1]] = "Q"
+        #     elsif @piece_controller.pieces_location_black[letter,1][0] == "P"
+        #         piece = @piece_controller.pieces_location.location_black([letter,1])
+        #         @piece_controller.pieces_location_black[letter,1] = "PQ"
+        #         @piece_controller.pieces_black[piece] = Queen.new("White",letter,1)
+        #         converted_queen_location = @board.converter([letter,1])
+        #         @board.board[converted_queen_location[0]][converted_queen_location[1]] = "Q"
+        #     end
+        # end
     end
 end
 

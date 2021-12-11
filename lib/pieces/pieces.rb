@@ -95,6 +95,34 @@ class Pieces
         end
     end
 
+    def king_valid_moves(location)
+        p location
+        @kings_valid_moves = []
+        @letters = ["A","B","C","D","E","F","G","H"]
+        @horz_location = @letters.index(location[0])
+        if (location[1] != 8 && location[1] != 1)
+            @allowed_vert_location = [location[1] - 1, location[1] + 1,location[1]]
+        elsif location[1] == 8
+            @allowed_vert_location = [7, 8]
+        elsif location[1] == 1
+            @allowed_vert_location = [2, 1]
+        end
+        if (@horz_location != 7 && @horz_location != 0)
+            @allowed_horz_location = [@letters[@horz_location + 1], @letters[@horz_location -1],@letters[@horz_location]]
+        elsif @horz_location == 7
+            @allowed_horz_location = ["G", "H"]
+        elsif @horz_location == 0
+            @allowed_horz_location = ["B", "A"]
+        end
+        @allowed_vert_location.each do |vert|
+            @allowed_horz_location.each do |horz|
+                @kings_valid_moves << [horz,vert]
+            end
+        end
+        return @kings_valid_moves
+    end       
+
+
     def piece_at_location(position,colour,check_type)
         p position
         case check_type

@@ -94,6 +94,7 @@ class Game_Controller
       turn_take(colour)
     elsif valid == true
       check(colour)
+      @board_controller.queening
     end
     if colour == "White"
       @player1.end_turn
@@ -106,7 +107,12 @@ class Game_Controller
     @who_is_in_check = "Noone"
     in_check = board_controller.check?(false,nil,colour)
     if in_check == true
-      if board_controller.checkmate? 
+      if colour == "White"
+        checking_colour = "Black"
+      else
+        checking_colour = "White"
+      end
+      if board_controller.checkmate?(checking_colour)
         player_wins(colour)
       end
       if colour == "White"
