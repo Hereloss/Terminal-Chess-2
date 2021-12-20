@@ -233,14 +233,12 @@ class Board_Controller
             else
                 puts "We have just one piece putting you in check!"
                 @checkmate = true
+                location = (@original_pieces_putting_king_in_check[0]).location
+                direction = @board.compass(location,@king_location)
+                @locations_to_block = @board.ray_return(location,@king_location,direction)
                 if (@original_pieces_putting_king_in_check[0]).is_a?(Knight)
                     puts 'The piece is a knight!'
                     @locations_to_block = [(@original_pieces_putting_king_in_check[0]).location]
-                else
-                    location = (@original_pieces_putting_king_in_check[0]).location
-                    direction = @board.compass(location,@king_location)
-                    @locations_to_block = @board.ray_return(location,@king_location,direction)
-                    puts @locations_to_block
                 end
                 if colour == "White"
                     @piece_controller.pieces_white.each do |key, object|

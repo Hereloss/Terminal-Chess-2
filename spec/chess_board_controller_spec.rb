@@ -96,6 +96,7 @@ describe Board_Controller do
         end_position = locations_b.key("P1")
         tracing = board_control.board.ray_trace(start_position,end_position)
         if (tracing == true) && (board_control.first_3_move_checks(locations_w, locations_b,"White") == true) && (board_control.piece_check(locations_w, locations_b,"White") == true)
+            #This is not being called
             expect(board_control.move_control_valid?(locations_w, locations_b,"White",false)).to eq true
         elsif (tracing == false) || (board_control.first_3_move_checks(locations_w, locations_b,"White") == false) || (board_control.piece_check(locations_w, locations_b,"White") == false)
             expect(board_control.move_control_valid?(locations_w, locations_b,"White",false)).to eq false
@@ -108,6 +109,7 @@ describe Board_Controller do
         start_position = locations_w.key("P1")
         locations_b = board_control.piece_controller.pieces_location_black
         end_position = locations_b.key("P1")
+        #This next bit isn't being called!
         if board_control.move_control_valid?(start_position, end_position,"White",false) == true
             piece = board_control.piece_controller.pieces_white["P1"]
             expect(piece.location).to eq(end_position)
@@ -120,6 +122,7 @@ describe Board_Controller do
         start_position = locations_w.key("P1")
         locations_b = board_control.piece_controller.pieces_location_black
         end_position = locations_b.key("P1")
+        #This bit might not be being called?
         if board_control.move_control_valid?(start_position, end_position,"White",false) == true
             piece = board_control.piece_controller.pieces_white["P1"]
             expect(board_control.piece_controller.pieces_location_white[end_position]).to eq "P1"
@@ -132,6 +135,7 @@ describe Board_Controller do
         start_position = locations_w.key("P1")
         locations_b = board_control.piece_controller.pieces_location_black
         end_position = locations_b.key("P1")
+        #This bit might not be being called?
         if board_control.move_control_valid?(start_position, end_position,"White",false) == true
             piece = board_control.piece_controller.pieces_black["P1"]
             expect(board_control.piece_controller.pieces_location_black[end_position]).to eq "None"
@@ -211,11 +215,35 @@ describe Board_Controller do
             allow(board).to receive(:ray_trace).and_return(true)
             allow(judge).to receive(:check?).and_return [pawn1,pawn2]
             allow(piece_controller).to receive(:location_king).and_return "Here"
+            allow(piece_controller).to receive(:pieces_black).and_return({"key" => "value"})
+            allow(piece_controller).to receive(:pieces_location_black).and_return({"To" => "There"}).twice
+            board_controller = (Board_Controller.new(piece_controller,board,judge))
+            board_controller.stub(:check_control).and_return(false)
+            board_controller.set_a_pawn_for_test(bishop)
+            expect(board_controller.piece_control("from","to","colour")).to eq false
+        end
+
+        it "Check control for black" do
+            board = double()
+            piece_controller = double()
+            judge = double()
+            bishop = double()
+            pawn1 = double()
+            pawn2 = double()
+            allow(pawn1).to receive(:location).and_return "There"
+            allow(pawn2).to receive(:location).and_return "There"
+            allow(bishop).to receive(:confirm).and_return true
+            allow(board).to receive(:update_board).and_return(true)
+            allow(board).to receive(:ray_trace).and_return(true)
+            allow(judge).to receive(:check?).and_return [pawn1,pawn2]
+            allow(board).to receive(:compass).and_return("Up")
+            allow(board).to receive(:ray_return).and_return([["A",3],["B",4]])
+            allow(piece_controller).to receive(:location_king).and_return "Here"
             expect(piece_controller).to receive(:pieces_black).and_return({"key" => "value"})
             expect(piece_controller).to receive(:pieces_location_black).and_return({"To" => "There"}).twice
             board_controller = (Board_Controller.new(piece_controller,board,judge))
             board_controller.set_a_pawn_for_test(bishop)
-            expect(board_controller.piece_control("from","to","colour")).to eq false
+            expect(board_controller.check_control("from","to","Black")).to eq false
         end
 
         it "If asked if check, will pass this onto the Judge" do
@@ -330,15 +358,76 @@ describe Board_Controller do
             allow(pawn2).to receive(:location).and_return(["None"])
             allow(bishop).to receive(:confirm).and_return(true)
             allow(judge).to receive(:check?).and_return [pawn1,pawn2]
+            allow(board).to receive(:compass).and_return("Up")
+            allow(board).to receive(:ray_return).and_return([["A",3],["B",4]])
             allow(piece_controller).to receive(:location_king).and_return "Here"
             allow(piece_controller).to receive(:pieces_white).and_return({"A" => pawn1,"B" => pawn2})
             allow(piece_controller).to receive(:pieces_location_white).and_return("Here" => "None")
             allow(piece_controller).to receive(:king_valid_moves).and_return(["A",3])
             board_controller = (Board_Controller.new(piece_controller,board,judge))
+            board_controller.stub(:king_moving_out_of_check).and_return(false)
+            board_controller.set_a_pawn_for_test(bishop)
+            board_controller.set_pieces_to_escape(pawn1)
+            board_controller.stub(:move_control_valid?).and_return(false)
+            expect(board_controller.checkmate?("White")).to eq true
+        end
+
+        it "If a piece can move to block the ray or take the piece, it is not mate for black" do
+            board = double()
+            piece_controller = double()
+            judge = double()
+            pawn1 = double()
+            pawn2 = double()
+            bishop = double()
+            allow(board).to receive(:update_board).and_return(true)
+            allow(board).to receive(:ray_trace).and_return(true)
+            allow(pawn1).to receive(:is_a?).and_return(Pawn)
+            allow(pawn2).to receive(:is_a?).and_return(Pawn)
+            allow(pawn1).to receive(:location).and_return(["None"])
+            allow(pawn2).to receive(:location).and_return(["None"])
+            allow(bishop).to receive(:confirm).and_return(true)
+            allow(judge).to receive(:check?).and_return [pawn1,pawn2]
+            allow(board).to receive(:compass).and_return("Up")
+            allow(board).to receive(:ray_return).and_return([["A",3],["B",4]])
+            allow(piece_controller).to receive(:location_king).and_return "Here"
+            allow(piece_controller).to receive(:pieces_white).and_return({"A" => pawn1,"B" => pawn2})
+            allow(piece_controller).to receive(:pieces_location_white).and_return("Here" => "None")
+            allow(piece_controller).to receive(:king_valid_moves).and_return(["A",3])
+            board_controller = (Board_Controller.new(piece_controller,board,judge))
+            board_controller.stub(:king_moving_out_of_check).and_return(false)
             board_controller.set_a_pawn_for_test(bishop)
             board_controller.set_pieces_to_escape(pawn1)
             board_controller.stub(:move_control_valid?).and_return(true)
-            expect(board_controller.checkmate?("White")).to eq true
+            expect(board_controller.checkmate?("Black")).to eq false
+        end
+
+        it "If a piece can move to block the ray or take the piece, it is not mate" do
+            board = double()
+            piece_controller = double()
+            judge = double()
+            pawn1 = double()
+            pawn2 = double()
+            bishop = double()
+            allow(board).to receive(:update_board).and_return(true)
+            allow(board).to receive(:ray_trace).and_return(true)
+            allow(pawn1).to receive(:is_a?).and_return(Pawn)
+            allow(pawn2).to receive(:is_a?).and_return(Pawn)
+            allow(pawn1).to receive(:location).and_return(["None"])
+            allow(pawn2).to receive(:location).and_return(["None"])
+            allow(bishop).to receive(:confirm).and_return(true)
+            allow(judge).to receive(:check?).and_return [pawn1,pawn2]
+            allow(board).to receive(:compass).and_return("Up")
+            allow(board).to receive(:ray_return).and_return([["A",3],["B",4]])
+            allow(piece_controller).to receive(:location_king).and_return "Here"
+            allow(piece_controller).to receive(:pieces_white).and_return({"A" => pawn1,"B" => pawn2})
+            allow(piece_controller).to receive(:pieces_location_white).and_return("Here" => "None")
+            allow(piece_controller).to receive(:king_valid_moves).and_return(["A",3])
+            board_controller = (Board_Controller.new(piece_controller,board,judge))
+            board_controller.stub(:king_moving_out_of_check).and_return(false)
+            board_controller.set_a_pawn_for_test(bishop)
+            board_controller.set_pieces_to_escape(pawn1)
+            board_controller.stub(:move_control_valid?).and_return(true)
+            expect(board_controller.checkmate?("White")).to eq false
         end
 
         it "Has a method to return checkmate if checkmate" do
@@ -346,6 +435,23 @@ describe Board_Controller do
         end
 
         it "If the king can move out of check, will return true for this method" do
+            board = double()
+            piece_controller = double()
+            judge = double()
+            king = double()
+            allow(king).to receive(:confirm).and_return(true)
+            allow(board).to receive(:update_board).and_return(true)
+            allow(piece_controller).to receive(:king_valid_moves).and_return(["A",3])
+            allow(piece_controller).to receive(:location_king).and_return "Here"
+            board_controller = (Board_Controller.new(piece_controller,board,judge))
+            board_controller.set_a_pawn_for_test(king)
+            board_controller.stub(:move_control_valid?).and_return(true)
+            board_controller.stub(:update_hash).and_return(true)
+            expect(board_controller.king_moving_out_of_check("White")).to eq true
         end
+
+        #Taking needs to be tested
+        #Moving ray = true needs testing
+
     end
 end
