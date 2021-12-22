@@ -95,11 +95,57 @@ describe Board_Controller do
         locations_b = board_control.piece_controller.pieces_location_black
         end_position = locations_b.key("P1")
         tracing = board_control.board.ray_trace(start_position,end_position)
-        if (tracing == true) && (board_control.first_3_move_checks(locations_w, locations_b,"White") == true) && (board_control.piece_check(locations_w, locations_b,"White") == true)
-            #This is not being called
-            expect(board_control.move_control_valid?(locations_w, locations_b,"White",false)).to eq true
-        elsif (tracing == false) || (board_control.first_3_move_checks(locations_w, locations_b,"White") == false) || (board_control.piece_check(locations_w, locations_b,"White") == false)
+        if (tracing == false) || (board_control.first_3_move_checks(locations_w, locations_b,"White") == false) || (board_control.piece_check(locations_w, locations_b,"White") == false)
             expect(board_control.move_control_valid?(locations_w, locations_b,"White",false)).to eq false
+        end
+        piece_controller = double()
+        pawn = double()
+        board = double()
+        judge = double()
+        board_controller = Board_Controller.new(piece_controller,board,judge)
+        locations_w = board_control.piece_controller.pieces_location_white
+        start_position = locations_w.key("P1")
+        locations_b = board_control.piece_controller.pieces_location_black
+        end_position = locations_b.key("P1")
+        allow(piece_controller).to receive(:piece_id_from_location).and_return(pawn)
+        allow(piece_controller).to receive(:piece_at_location).and_return("P1")
+        allow(piece_controller).to receive(:pieces_white).and_return({"Location" => "Some Piece"})
+        allow(piece_controller).to receive(:pieces_location_white).and_return({"Location" => "Some Piece"})
+        allow(board).to receive(:update_board).and_return("Done")
+        allow(pawn).to receive(:confirm).and_return(true)
+        tracing = true
+        board_controller.stub(:check?).and_return(false)
+        board_controller.stub(:piece_check).and_return(true)
+        board_controller.stub(:first_3_move_checks).and_return(true)
+        allow(piece_controller).to receive(:piece_type_from_location).and_return(["X"])
+        if (tracing == true) && (board_controller.first_3_move_checks(locations_w, locations_b,"White") == true) && (board_controller.piece_check(locations_b) == true)
+            expect(board_controller.move_control_valid?(locations_w, locations_b,"White",false)).to eq true
+        end
+    end
+
+    it "Will return false if the piece check is false" do
+        piece_controller = double()
+        pawn = double()
+        board = double()
+        judge = double()
+        board_controller = Board_Controller.new(piece_controller,board,judge)
+        allow(piece_controller).to receive(:piece_id_from_location).and_return(pawn)
+        allow(piece_controller).to receive(:piece_at_location).and_return("P1")
+        allow(piece_controller).to receive(:pieces_white).and_return({"Location" => "Some Piece"})
+        allow(piece_controller).to receive(:pieces_location_white).and_return({"Location" => "Some Piece"})
+        allow(board).to receive(:update_board).and_return("Done")
+        allow(pawn).to receive(:confirm).and_return(true)
+        tracing = true
+        locations_w = board_controller.piece_controller.pieces_location_white
+        start_position = locations_w.key("P1")
+        locations_b = {["A",7] => "P1"}
+        end_position = locations_b.key("P1")
+        board_controller.stub(:check?).and_return(false)
+        board_controller.stub(:piece_check).and_return(false)
+        board_controller.stub(:first_3_move_checks).and_return(true)
+        allow(piece_controller).to receive(:piece_type_from_location).and_return(["X"])
+        if (tracing == true) && (board_controller.first_3_move_checks(locations_w, locations_b,"White") == true) && (board_controller.piece_check(locations_b) == false)
+            expect(board_controller.move_control_valid?(locations_w, locations_b,"White",false)).to eq false
         end
     end
 
@@ -109,20 +155,26 @@ describe Board_Controller do
         start_position = locations_w.key("P1")
         locations_b = board_control.piece_controller.pieces_location_black
         end_position = locations_b.key("P1")
-        #This next bit isn't being called!
+        board_control.stub(:move_control_valid?).and_return(true)
         if board_control.move_control_valid?(start_position, end_position,"White",false) == true
             piece = board_control.piece_controller.pieces_white["P1"]
+            piece.stub(:location).and_return(["A",7])
             expect(piece.location).to eq(end_position)
         end
     end
 
     it "If a move is valid, the controller will update its position hash for the piece" do
         board_control = Board_Controller.new
+        piece_controller = double()
         locations_w = board_control.piece_controller.pieces_location_white
         start_position = locations_w.key("P1")
         locations_b = board_control.piece_controller.pieces_location_black
         end_position = locations_b.key("P1")
-        #This bit might not be being called?
+        allow(piece_controller).to receive(:pieces_location_white).and_return({"Ending" => "P1"})
+        allow(piece_controller).to receive(:pieces_white).and_return("None")
+        board_control.stub(:move_control_valid?).and_return(true)
+        board_control.stub(:piece_controller).and_return(piece_controller)
+        end_position = "Ending"
         if board_control.move_control_valid?(start_position, end_position,"White",false) == true
             piece = board_control.piece_controller.pieces_white["P1"]
             expect(board_control.piece_controller.pieces_location_white[end_position]).to eq "P1"
@@ -131,11 +183,16 @@ describe Board_Controller do
 
     it "If a piece has been taken, it is removed from the hash" do
         board_control = Board_Controller.new
+        piece_controller = double()
         locations_w = board_control.piece_controller.pieces_location_white
         start_position = locations_w.key("P1")
         locations_b = board_control.piece_controller.pieces_location_black
         end_position = locations_b.key("P1")
-        #This bit might not be being called?
+        allow(piece_controller).to receive(:pieces_location_black).and_return({"Ending" => "None"})
+        allow(piece_controller).to receive(:pieces_black).and_return("None")
+        board_control.stub(:move_control_valid?).and_return(true)
+        board_control.stub(:piece_controller).and_return(piece_controller)
+        end_position = "Ending"
         if board_control.move_control_valid?(start_position, end_position,"White",false) == true
             piece = board_control.piece_controller.pieces_black["P1"]
             expect(board_control.piece_controller.pieces_location_black[end_position]).to eq "None"
@@ -450,9 +507,21 @@ describe Board_Controller do
             expect(board_controller.king_moving_out_of_check("White")).to eq true
         end
 
-        it 'Further test to complete coverage - taking and ray trace being true' do
-            #Taking needs to be tested
-            #Moving ray = true needs testing
+        it 'Further test to complete coverage - line 134 of Board Controller' do
+            board = double()
+            piece_controller = double()
+            judge = double()
+            pawn = double()
+            board_controller = Board_Controller.new(piece_controller,board,judge)
+            board_controller.set_a_pawn_for_test(pawn)
+            board_controller.stub(:update_hash).and_return(true)
+            board_controller.stub(:remove_piece).and_return(true)
+            board_controller.stub(:check_control).and_return(true)
+            allow(piece_controller).to receive(:piece_at_location).and_return true
+            allow(pawn).to receive(:confirm).and_return(true)
+            allow(board).to receive(:update_board).and_return('Done')
+            board_controller.set_taking_for_test
+            expect(board_controller.piece_control("from","to","White")).to eq true
         end
 
         it "A white pawn on the end of the board is promoted to a queen" do

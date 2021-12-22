@@ -109,6 +109,10 @@ class Board_Controller
         end
     end
 
+    def set_taking_for_test
+        @taking = true
+    end
+
     def set_a_pawn_for_test(bishop)
         @piece_moving = bishop
         @taking = false
@@ -130,6 +134,8 @@ class Board_Controller
             puts "That puts you in check - you can't make that move!"
             return false
         else
+            puts "I do hit here!"
+            puts @taking
             if @taking == true
                 remove_piece(to,colour)
             end
