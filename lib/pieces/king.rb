@@ -55,7 +55,10 @@ class King
   end
 
   def castling(located)
-    if (located[0].to_i == (@current_location[0].to_i + 2)) || (located[0].to_i == (@current_location[0].to_i - 2)) && (located[1] == @current_location[1])
+    current_horz_loc = @letters.find_index(@current_location[0])
+    letter = located[0]
+    new_horz_loc = @letters.find_index(letter)
+    if ((current_horz_loc + 2 == new_horz_loc) || (current_horz_loc - 2 == new_horz_loc)) && (located[1] == @current_location[1])
       @castling = true
       true
     else
@@ -71,5 +74,9 @@ class King
     else
       valid?(located)
     end
+  end
+
+  def set_previously_for_test
+    @previously = true
   end
 end
