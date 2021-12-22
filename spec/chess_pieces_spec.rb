@@ -9,6 +9,14 @@ describe Pieces do
         expect(pieces.piece_at_location(filled_position,"White","P")).to eq(true)
     end
 
+    it "Can check if there is a piece at a given position" do
+        pieces = Pieces.new
+        locations = pieces.pieces_location_black
+        filled_position = locations.key("P1")
+        expect(pieces.piece_at_location(filled_position,"White","T")).to eq(true)
+    end
+
+
     it "Upon initializing creates creates instances of all the pieces" do
         board_control = Board_Controller.new
         types = {"P1" => Pawn,"P2" => Pawn,"P3" => Pawn,"P4" => Pawn,"P5" => Pawn,"P6" => Pawn,"P7" => Pawn,

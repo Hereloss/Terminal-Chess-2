@@ -286,21 +286,25 @@ class Board_Controller
     end
 
     def queening
-        # ["A","B","C","D","E","F","G","H"].each do |letter|
-        #     if @piece_controller.pieces_location_white[letter,8][0] == "P"
-        #         piece = @piece_controller.pieces_location.location_white([letter,8])
-        #         @piece_controller.pieces_location_white[letter,8] = "PQ"
-        #         @piece_controller.pieces_white[piece] = Queen.new("White",letter,8)
-        #         converted_queen_location = @board.converter[letter,8]
-        #         @board.board[converted_queen_location[0]][converted_queen_location[1]] = "Q"
-        #     elsif @piece_controller.pieces_location_black[letter,1][0] == "P"
-        #         piece = @piece_controller.pieces_location.location_black([letter,1])
-        #         @piece_controller.pieces_location_black[letter,1] = "PQ"
-        #         @piece_controller.pieces_black[piece] = Queen.new("White",letter,1)
-        #         converted_queen_location = @board.converter([letter,1])
-        #         @board.board[converted_queen_location[0]][converted_queen_location[1]] = "Q"
-        #     end
-        # end
+        ["A","B","C","D","E","F","G","H"].each do |letter|
+            if (@piece_controller.pieces_location_white[[letter,8]].nil? == false && @piece_controller.pieces_location_white[[letter,8]] != "None")
+                if @piece_controller.pieces_location_white[[letter,8]][0] == "P"
+                    piece = @piece_controller.pieces_location_white([letter,8])
+                    @piece_controller.pieces_location_white[[letter,8]] = "QP"
+                    @piece_controller.pieces_white[piece] = Queen.new("White",[letter,8])
+                    converted_queen_location = @board.converter([letter,8])
+                    @board.board[converted_queen_location[0]][converted_queen_location[1]] = "Q"
+                end
+            elsif (!@piece_controller.pieces_location_black[[letter,1]].nil? && @piece_controller.pieces_location_black[[letter,1]] != "None")
+                if @piece_controller.pieces_location_black[[letter,1]][0] == "P"
+                    piece = @piece_controller.pieces_location_black([letter,1])
+                    @piece_controller.pieces_location_black[[letter,1]] = "QP"
+                    @piece_controller.pieces_black[piece] = Queen.new("White",[letter,1])
+                    converted_queen_location = @board.converter([letter,1])
+                    @board.board[converted_queen_location[0]][converted_queen_location[1]] = "Q"
+                end
+            end
+        end
     end
 end
 

@@ -149,19 +149,15 @@ class Pieces
             case colour
             when "Black"
                 if @pieces_location_white[position].nil?
-                    puts "No Black Piece at position"
                     return false
                 else
-                    puts "Black piece at position"
                     return true
                 end
             when "White"
                 if @pieces_location_black[position].nil?
-                    puts "No White Piece at position"
                     return false
                 else
                     return true
-                    puts "No White Piece at position"
                 end
             end
         end

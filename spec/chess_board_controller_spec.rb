@@ -450,8 +450,41 @@ describe Board_Controller do
             expect(board_controller.king_moving_out_of_check("White")).to eq true
         end
 
-        #Taking needs to be tested
-        #Moving ray = true needs testing
+        it 'Further test to complete coverage - taking and ray trace being true' do
+            #Taking needs to be tested
+            #Moving ray = true needs testing
+        end
 
+        it "A white pawn on the end of the board is promoted to a queen" do
+            piece_controller = double()
+            board = double()
+            judge = double()
+            allow(piece_controller).to receive(:pieces_location_white).and_return({['A',8] => "P1"})
+            allow(piece_controller).to receive(:pieces_white).and_return({"P1" => Queen.new("A","B")})
+            allow(piece_controller).to receive(:pieces_location_black).and_return({['A',1] => "None"})
+            allow(piece_controller).to receive(:pieces_black).and_return({"P1" => Queen.new("A","B")})
+            allow(board).to receive(:converter).and_return(1,1)
+            allow(board).to receive(:board).and_return([[1,1],[1,"Q"]])
+            board_controller = (Board_Controller.new(piece_controller,board,judge))
+            board_controller.queening
+            expect(piece_controller.pieces_white["P1"]).to be_an_instance_of(Queen)
+            expect(board.board[1][1]).to eq("Q")
+        end
+
+        it "A black pawn on the end of the board is promoted to a queen" do
+            piece_controller = double()
+            board = double()
+            judge = double()
+            allow(piece_controller).to receive(:pieces_location_black).and_return({['A',1] => "P1"})
+            allow(piece_controller).to receive(:pieces_black).and_return({"P1" => Queen.new("A","B")})
+            allow(piece_controller).to receive(:pieces_location_white).and_return({['A',8] => "None"})
+            allow(piece_controller).to receive(:pieces_white).and_return({"P1" => Queen.new("A","B")})
+            allow(board).to receive(:converter).and_return(1,1)
+            allow(board).to receive(:board).and_return([[1,1],[1,"Q"]])
+            board_controller = (Board_Controller.new(piece_controller,board,judge))
+            board_controller.queening
+            expect(piece_controller.pieces_black["P1"]).to be_instance_of(Queen)
+            expect(board.board[1][1]).to eq("Q")
+        end
     end
 end

@@ -51,6 +51,13 @@ describe Pawn do
         expect(pawn.valid?(@located,previous,false)).to eq(true).or eq(false)
     end
 
+    it "A pawn knows if a given move to it is valid" do
+        pawn = Pawn.new("Black",["A",5])
+        @located = pawn.location
+        previous = pawn.previous?
+        expect(pawn.valid?(@located,previous,false)).to eq(true).or eq(false)
+    end
+
     it "A pawn when given a move will confirm if the move is valid" do
         coords = []
         taking = true

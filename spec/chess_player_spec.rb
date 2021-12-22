@@ -3,8 +3,13 @@ require 'player'
 describe Player do 
 
   it "The player knows their colour" do
-    player = Player.new("White")
+    player = Player.new(1)
     expect(player.colour).to eq("White")
+  end
+
+  it "The player knows their colour" do
+    player = Player.new(2)
+    expect(player.colour).to eq("Black")
   end
 
   it "The player knows if it is their turn" do

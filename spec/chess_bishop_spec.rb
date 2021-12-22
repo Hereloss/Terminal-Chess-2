@@ -56,7 +56,7 @@ describe Bishop do
     it "A move is valid if it is if it is in a diagonal line of the piece " do
         piece = Bishop.new("White",["C",5])
         @letters = ["A","B","C","D","E","F","G","H"]
-        new_location = [@letters.sample,rand(1..8)]
+        new_location = ["E", 7]
         new_horz_loc = @letters.find_index(new_location[0])
         old_horz_loc = @letters.find_index("C")
         diff_vert = new_location[1] - 5
