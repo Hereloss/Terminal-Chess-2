@@ -73,4 +73,10 @@ describe Player do
     expect(player.formatted(move)).to eq(["Bishop",["A",3],["A",5]])
   end
 
+  it "should set exit if a player surrenders" do
+    player = Player.new("White")
+    expect_any_instance_of(Player).to receive(:gets).and_return("Surrender")
+    lambda { player.move_input; exit }.should raise_error SystemExit
+  end
+
 end

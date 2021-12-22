@@ -134,8 +134,6 @@ class Board_Controller
             puts "That puts you in check - you can't make that move!"
             return false
         else
-            puts "I do hit here!"
-            puts @taking
             if @taking == true
                 remove_piece(to,colour)
             end
