@@ -8,10 +8,10 @@ require 'colorized_string'
 class Game_Controller
   attr_reader :player1, :player2, :board_controller, :choice
 
-  def initialize
-    @board_controller = Board_Controller.new
-    @player1 = Player.new(1)
-    @player2 = Player.new(2)
+  def initialize(board_controller = Board_Controller.new,player1 = Player.new(1),player2 = Player.new(2))
+    @board_controller = board_controller
+    @player1 = player1
+    @player2 = player2
     @players = [@player1, @player2]
     puts 'Welcome To Chess!'
     puts 'What would you like to do?'
@@ -69,7 +69,7 @@ class Game_Controller
       turn_take('White')
       @current_colour = 'Black'
       colour = 'Black'
-      game_playing(colour)
+      game_playing_test_break(colour)
     when 'Black'
       system 'clear'
       @board_controller.board.board.each do |arr|
@@ -79,8 +79,12 @@ class Game_Controller
       turn_take('Black')
       @current_colour = 'White'
       colour = 'White'
-      game_playing(colour)
+      game_playing_test_break(colour)
     end
+  end
+
+  def game_playing_test_break(colour)
+    game_playing(colour)
   end
 
   def turn_take(colour)

@@ -143,8 +143,7 @@ class Board_Controller
               if @piece_controller.pieces_location_white['A', 1] == 'R1'
                 rook = @piece_controller.pieces_white['R1']
                 if @piece_controller.pieces_location_white['B',
-                                                           1].nil? || @piece_controller.pieces_location_white['B',
-                                                                                                              1] == 'None'
+                                    1].nil? || @piece_controller.pieces_location_white['B', 1] == 'None'
                   rook.confirm(['D', 1])
                   @board.update_board(['A', 1], ['D', 1])
                 else
@@ -161,6 +160,8 @@ class Board_Controller
               else
                 return false
               end
+            else
+                return false
             end
           end
         when 'Black'
@@ -171,8 +172,7 @@ class Board_Controller
               if @piece_controller.pieces_location_black['A', 8] == 'R1'
                 rook = @piece_controller.pieces_black['R1']
                 if @piece_controller.pieces_location_black['B',
-                                                           1].nil? || @piece_controller.pieces_location_black['B',
-                                                                                                              1] == 'None'
+                                     1].nil? || @piece_controller.pieces_location_black['B',1] == 'None'
                   rook.confirm(['D', 8])
                   @board.update_board(['A', 1], ['D', 1])
                 else
@@ -189,6 +189,8 @@ class Board_Controller
               else
                 return true
               end
+            else
+                return false
             end
           end
         end

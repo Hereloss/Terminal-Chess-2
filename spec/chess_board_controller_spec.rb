@@ -256,9 +256,6 @@ describe Board_Controller do
     expect(board_controller.remove_piece(['A', 3], 'White')).to eq 'None'
   end
 
-  it 'A pawn that reaches the end of the board is promoted to a queen' do
-  end
-
   context '.check and .checkmate' do
     it 'If a move puts you into check, you cannot make that move' do
       board = double
@@ -557,5 +554,85 @@ describe Board_Controller do
       expect(piece_controller.pieces_black['P1']).to be_instance_of(Queen)
       expect(board.board[1][1]).to eq('Q')
     end
+  end
+
+  it "When moving a king, will check if castling" do
+    board = double()
+    piece_controller = double()
+    judge = double()
+    king = double()
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.set_a_pawn_for_test(king)
+    board_controller.piece_control(["A",5],["C",5],"White")
+  end
+
+  it "When moving a king and it is castling, if it is not a possible move will return false" do
+    board = double()
+    piece_controller = double()
+    judge = double()
+    king = double()
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.set_a_pawn_for_test(king)
+    board_controller.piece_control(["A",5],["C",5],"White")
+  end
+
+  it "The white king can castle queenside if the space is free for the rook to move" do
+    board = double()
+    piece_controller = double()
+    judge = double()
+    king = double()
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.set_a_pawn_for_test(king)
+    board_controller.piece_control(["A",5],["C",5],"White")
+  end
+
+  it "The white king cannot castle queenside if the space is not free for the rook" do
+    board = double()
+    piece_controller = double()
+    judge = double()
+    king = double()
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.set_a_pawn_for_test(king)
+    board_controller.piece_control(["A",5],["C",5],"White")
+  end
+
+  it "The white king can castle kingside" do
+    board = double()
+    piece_controller = double()
+    judge = double()
+    king = double()
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.set_a_pawn_for_test(king)
+    board_controller.piece_control(["A",5],["C",5],"White")
+  end
+
+  it "The black king can castle queenside if the space is free for the rook to move" do
+    board = double()
+    piece_controller = double()
+    judge = double()
+    king = double()
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.set_a_pawn_for_test(king)
+    board_controller.piece_control(["A",5],["C",5],"White")
+  end
+
+  it "The black king cannot castle queenside if the space is not free for the rook" do
+    board = double()
+    piece_controller = double()
+    judge = double()
+    king = double()
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.set_a_pawn_for_test(king)
+    board_controller.piece_control(["A",5],["C",5],"White")
+  end
+
+  it "The black king can castle kingside" do
+    board = double()
+    piece_controller = double()
+    judge = double()
+    king = double()
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.set_a_pawn_for_test(king)
+    board_controller.piece_control(["A",5],["C",5],"White")
   end
 end
