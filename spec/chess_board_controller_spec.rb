@@ -597,6 +597,7 @@ describe Board_Controller do
     allow(king).to receive(:is_a?).and_return(King)
     allow(king).to receive(:castling).and_return(true)
     allow(rook).to receive(:confirm).and_return(true)
+    allow(rook).to receive(:previously).and_return(false)
     allow(board).to receive(:update_board)
     allow(piece_controller).to receive(:pieces_location_white).and_return({['A', 1] => "R1"})
     allow(piece_controller).to receive(:pieces_location_black).and_return({['A', 1] => "R1"})
@@ -606,6 +607,28 @@ describe Board_Controller do
     board_controller.stub(:check_control).and_return(true)
     board_controller.set_a_pawn_for_test(king)
     expect(board_controller.piece_control(["A",5],["C",1],"White")).to eq(true)
+  end
+
+  it "The white king cannot castle queenside the rook has previously moved" do
+    board = double("Board")
+    piece_controller = double("Piece_Controller")
+    judge = double("Judge")
+    king = double("King")
+    rook = double("Rook")
+    allow(king).to receive(:confirm).and_return(true)
+    allow(king).to receive(:is_a?).and_return(King)
+    allow(king).to receive(:castling).and_return(true)
+    allow(rook).to receive(:confirm).and_return(true)
+    allow(rook).to receive(:previously).and_return(true)
+    allow(board).to receive(:update_board)
+    allow(piece_controller).to receive(:pieces_location_white).and_return({['A', 1] => "R1"})
+    allow(piece_controller).to receive(:pieces_location_black).and_return({['A', 1] => "R1"})
+    allow(piece_controller).to receive(:pieces_white).and_return({"R1" => rook})
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.stub(:update_hash).and_return(true)
+    board_controller.stub(:check_control).and_return(true)
+    board_controller.set_a_pawn_for_test(king)
+    expect(board_controller.piece_control(["A",5],["C",1],"White")).to eq(false)
   end
 
   it "The white king cannot castle queenside if the space is not free for the rook" do
@@ -660,6 +683,7 @@ describe Board_Controller do
     allow(king).to receive(:is_a?).and_return(King)
     allow(king).to receive(:castling).and_return(true)
     allow(rook).to receive(:confirm).and_return(true)
+    allow(rook).to receive(:previously).and_return(false)
     allow(board).to receive(:update_board)
     allow(piece_controller).to receive(:pieces_location_white).and_return({['H', 1] => "R2"})
     allow(piece_controller).to receive(:pieces_location_black).and_return({['H', 1] => "R2"})
@@ -669,6 +693,28 @@ describe Board_Controller do
     board_controller.stub(:check_control).and_return(true)
     board_controller.set_a_pawn_for_test(king)
     expect(board_controller.piece_control(["A",5],["G",1],"White")).to eq(true)
+  end
+
+  it "If the rook has previously moved, cannot castle kingside on white" do
+    board = double("Board")
+    piece_controller = double("Piece_Controller")
+    judge = double("Judge")
+    king = double("King")
+    rook = double("Rook")
+    allow(king).to receive(:confirm).and_return(true)
+    allow(king).to receive(:is_a?).and_return(King)
+    allow(king).to receive(:castling).and_return(true)
+    allow(rook).to receive(:confirm).and_return(true)
+    allow(rook).to receive(:previously).and_return(true)
+    allow(board).to receive(:update_board)
+    allow(piece_controller).to receive(:pieces_location_white).and_return({['H', 1] => "R2"})
+    allow(piece_controller).to receive(:pieces_location_black).and_return({['H', 1] => "R2"})
+    allow(piece_controller).to receive(:pieces_white).and_return({"R2" => rook})
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.stub(:update_hash).and_return(true)
+    board_controller.stub(:check_control).and_return(true)
+    board_controller.set_a_pawn_for_test(king)
+    expect(board_controller.piece_control(["A",5],["G",1],"White")).to eq(false)
   end
 
   it "The white king cannot castle kingside if there is no rook there" do
@@ -702,6 +748,7 @@ describe Board_Controller do
     allow(king).to receive(:is_a?).and_return(King)
     allow(king).to receive(:castling).and_return(true)
     allow(rook).to receive(:confirm).and_return(true)
+    allow(rook).to receive(:previously).and_return(false)
     allow(board).to receive(:update_board)
     allow(piece_controller).to receive(:pieces_location_white).and_return({['A', 8] => "R1"})
     allow(piece_controller).to receive(:pieces_location_black).and_return({['A', 8] => "R1"})
@@ -711,6 +758,29 @@ describe Board_Controller do
     board_controller.stub(:check_control).and_return(true)
     board_controller.set_a_pawn_for_test(king)
     expect(board_controller.piece_control(["A",5],["C",8],"Black")).to eq(true)
+  end
+
+
+  it "The black king cannot castle queenside if rook has previously moved" do
+    board = double("Board")
+    piece_controller = double("Piece_Controller")
+    judge = double("Judge")
+    king = double("King")
+    rook = double("Rook")
+    allow(king).to receive(:confirm).and_return(true)
+    allow(king).to receive(:is_a?).and_return(King)
+    allow(king).to receive(:castling).and_return(true)
+    allow(rook).to receive(:confirm).and_return(true)
+    allow(rook).to receive(:previously).and_return(true)
+    allow(board).to receive(:update_board)
+    allow(piece_controller).to receive(:pieces_location_white).and_return({['A', 8] => "R1"})
+    allow(piece_controller).to receive(:pieces_location_black).and_return({['A', 8] => "R1"})
+    allow(piece_controller).to receive(:pieces_black).and_return({"R1" => rook})
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.stub(:update_hash).and_return(true)
+    board_controller.stub(:check_control).and_return(true)
+    board_controller.set_a_pawn_for_test(king)
+    expect(board_controller.piece_control(["A",5],["C",8],"Black")).to eq(false)
   end
 
   it "The black king cannot castle queenside if the space is not free for the rook" do
@@ -767,6 +837,7 @@ describe Board_Controller do
     allow(king).to receive(:is_a?).and_return(King)
     allow(king).to receive(:castling).and_return(true)
     allow(rook).to receive(:confirm).and_return(true)
+    allow(rook).to receive(:previously).and_return(false)
     allow(board).to receive(:update_board)
     allow(piece_controller).to receive(:pieces_location_white).and_return({['H', 8] => "R2"})
     allow(piece_controller).to receive(:pieces_location_black).and_return({['H', 8] => "R2"})
@@ -776,6 +847,28 @@ describe Board_Controller do
     board_controller.stub(:check_control).and_return(true)
     board_controller.set_a_pawn_for_test(king)
     expect(board_controller.piece_control(["A",5],["G",8],"Black")).to eq(true)
+  end
+
+  it "The black king cannot castle kingside if the rook has previously moved" do
+    board = double("Board")
+    piece_controller = double("Piece_Controller")
+    judge = double("Judge")
+    king = double("King")
+    rook = double("Rook")
+    allow(king).to receive(:confirm).and_return(true)
+    allow(king).to receive(:is_a?).and_return(King)
+    allow(king).to receive(:castling).and_return(true)
+    allow(rook).to receive(:confirm).and_return(true)
+    allow(rook).to receive(:previously).and_return(true)
+    allow(board).to receive(:update_board)
+    allow(piece_controller).to receive(:pieces_location_white).and_return({['H', 8] => "R2"})
+    allow(piece_controller).to receive(:pieces_location_black).and_return({['H', 8] => "R2"})
+    allow(piece_controller).to receive(:pieces_black).and_return({"R2" => rook})
+    board_controller = Board_Controller.new(piece_controller,board,judge)
+    board_controller.stub(:update_hash).and_return(true)
+    board_controller.stub(:check_control).and_return(true)
+    board_controller.set_a_pawn_for_test(king)
+    expect(board_controller.piece_control(["A",5],["G",8],"Black")).to eq(false)
   end
 
   it "The black king cannot castle kingside if there is no rook there" do
@@ -818,9 +911,5 @@ describe Board_Controller do
     board_controller.stub(:check_control).and_return(true)
     board_controller.set_a_pawn_for_test(king)
     expect(board_controller.piece_control(["A",5],["F",8],"Black")).to eq(false)
-  end
-
-  it "Once castled, the rook is also moved in all the above scenarios" do
-    
   end
 end
