@@ -30,7 +30,7 @@ Moves MUST be inputted in a specific format as per below:
 Moves must be entered in the format: Piece, Position From, Position To'
 For example, "Pawn,(E,2),(E,3)" is valid
 But the following are not: 
-(E,2),(E,3);Pawn,(E ,2),(E,3),Pawn,(E,2),(Et,3)
+(E,2),(E,3);Pawn,(E ,2),(E,3);Pawn,(E,2),(Et,3)
 
 ## Contributing
 
