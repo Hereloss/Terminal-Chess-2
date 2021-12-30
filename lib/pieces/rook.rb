@@ -4,9 +4,8 @@ require 'colorize'
 require 'colorized_string'
 
 class Rook
+  attr_reader :previously, :colour
 
-  attr_reader :previously
-  
   def initialize(colour, location)
     @living = 'Y'
     @colour = colour
@@ -23,8 +22,6 @@ class Rook
     @living = 'N'
     @living
   end
-
-  attr_reader :colour
 
   def location
     @current_location

@@ -8,7 +8,7 @@ require 'colorized_string'
 class Game_Controller
   attr_reader :player1, :player2, :board_controller, :choice
 
-  def initialize(board_controller = Board_Controller.new,player1 = Player.new(1),player2 = Player.new(2))
+  def initialize(board_controller = Board_Controller.new, player1 = Player.new(1), player2 = Player.new(2))
     @board_controller = board_controller
     @player1 = player1
     @player2 = player2

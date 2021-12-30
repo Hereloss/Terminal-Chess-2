@@ -89,7 +89,7 @@ describe King do
     expect(@located).to_not eq(@new_position)
   end
 
-  it "The king will confirm an invalid move differently once a previous move made" do
+  it 'The king will confirm an invalid move differently once a previous move made' do
     piece = King.new('White', ['C', 5])
     @located = piece.location
     piece.set_previously_for_test
@@ -97,10 +97,10 @@ describe King do
     expect(piece.valid?([@located[0], @located[1] + 2])).to eq(false)
   end
 
-  it "The king will confirm that a castling move is valid for it" do
+  it 'The king will confirm that a castling move is valid for it' do
     piece = King.new('White', ['C', 5])
     @located = piece.location
-    expect(piece.valid?(["E", @located[1]])).to eq(true)
-    expect(piece.valid?(["A", @located[1]])).to eq(true)
+    expect(piece.valid?(['E', @located[1]])).to eq(true)
+    expect(piece.valid?(['A', @located[1]])).to eq(true)
   end
 end
