@@ -126,6 +126,7 @@ class Board_Controller
   end
 
   def piece_control(from, to, colour)
+    puts @piece_moving
     @piece_moving.confirm(to)
     update_hash(from, to, colour)
     @board.update_board(from, to)
@@ -140,10 +141,11 @@ class Board_Controller
             @rook_location = []
             case to
             when ['C', 1]
-              if @piece_controller.pieces_location_white['A', 1] == 'R1'
+              if @piece_controller.pieces_location_white[['A', 1]] == 'R1'
                 rook = @piece_controller.pieces_white['R1']
-                if @piece_controller.pieces_location_white['B',
-                                    1].nil? || @piece_controller.pieces_location_white['B', 1] == 'None'
+                if ((@piece_controller.pieces_location_white[['B',
+                  1]].nil? || @piece_controller.pieces_location_white[['B',
+                                    1]]== (nil || "None")) && (@piece_controller.pieces_location_black[['B', 1]].nil? || @piece_controller.pieces_location_black[['B', 1]] == "None"))             
                   rook.confirm(['D', 1])
                   @board.update_board(['A', 1], ['D', 1])
                 else
@@ -153,7 +155,7 @@ class Board_Controller
                 return false
               end
             when ['G', 1]
-              if @piece_controller.pieces_location_white['H', 1] == 'R2'
+              if @piece_controller.pieces_location_white[['H', 1]] == 'R2'
                 rook = @piece_controller.pieces_white['R2']
                 rook.confirm(['F', 1])
                 @board.update_board(['H', 1], ['F', 1])
@@ -169,25 +171,26 @@ class Board_Controller
             @rook_location = []
             case to
             when ['C', 8]
-              if @piece_controller.pieces_location_black['A', 8] == 'R1'
+              if @piece_controller.pieces_location_black[['A', 8]] == 'R1'
                 rook = @piece_controller.pieces_black['R1']
-                if @piece_controller.pieces_location_black['B',
-                                     1].nil? || @piece_controller.pieces_location_black['B',1] == 'None'
+                if ((@piece_controller.pieces_location_white[['B',
+                  8]].nil? || @piece_controller.pieces_location_white[['B',
+                                    8]]== (nil || "None")) && (@piece_controller.pieces_location_black[['B', 8]].nil? || @piece_controller.pieces_location_black[['B', 8]] == "None")) 
                   rook.confirm(['D', 8])
-                  @board.update_board(['A', 1], ['D', 1])
+                  @board.update_board(['A', 8], ['D', 8])
                 else
                   return false
                 end
               else
                 return false
               end
-            when ['G', 1]
-              if @piece_controller.pieces_location_black['H', 1] == 'R2'
+            when ['G', 8]
+              if @piece_controller.pieces_location_black[['H', 8]] == 'R2'
                 rook = @piece_controller.pieces_black['R2']
-                rook.confirm(['D', 1])
-                @board.update_board(['A', 1], ['D', 1])
+                rook.confirm(['F', 8])
+                @board.update_board(['H', 8], ['F', 8])
               else
-                return true
+                return false
               end
             else
                 return false
