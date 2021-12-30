@@ -145,6 +145,11 @@ class Game_Controller
     puts 'Knight, An L shape (1 one way, 2 the other) in any direction, King, 1 square in any direction'
     puts "Pawn, 1 square forward unless it is it's first move, when it can move 2 squares"
     puts "Once you've finished reading these, please just press enter"
+    puts "A Pawn will be promoted to a Queen once it reaches the other side of the board."
+    puts "Castling can only be done when a King and the respective Rook have both not moved and have a clear path between them."
+    puts "Castling lets the King move 2 spaces to either the left or right, and puts the rook to the opposite side of it."
+    puts 'Any player can surrender by inputting "Surrender" instead of a move'
+    puts "Once you've finished reading these, please just press enter"
     confirms = confirm
     system 'clear'
     play_game

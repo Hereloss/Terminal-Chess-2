@@ -96,9 +96,7 @@ describe Board_Controller do
     end_position = locations_b.key('P1')
     tracing = board_control.board.ray_trace(start_position, end_position)
     if (tracing == false) || (board_control.first_3_move_checks(locations_w, locations_b,
-                                                                'White') == false) || (board_control.piece_check(
-                                                                  locations_w, locations_b, 'White'
-                                                                ) == false)
+                              'White') == false) || (board_control.piece_check(locations_w, locations_b, 'White') == false)
       expect(board_control.move_control_valid?(locations_w, locations_b, 'White', false)).to eq false
     end
     piece_controller = double

@@ -76,8 +76,7 @@ describe Player do
     player = Player.new('White')
     expect_any_instance_of(Player).to receive(:gets).and_return('Surrender')
     lambda {
-      player.move_input
-      exit
+      player.move_input; exit
     }.should raise_error SystemExit
   end
 end
