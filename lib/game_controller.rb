@@ -159,3 +159,5 @@ class Game_Controller
     @confirm = gets.chomp
   end
 end
+
+game = Game_Controller.new
