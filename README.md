@@ -9,7 +9,7 @@ This can be played in the terminal of any code editor. Install the required Ruby
 
 ## Usage
 
-To play, run the program in the terminal by running the 'game_controller.rb' file - all other files are required from here.
+To play, run the program in the terminal by opening irb, requiring the './lib/game_controller.rb' file and the game should start up with a welcome message. Alternatively, run the ruby file with "ruby './lib/game_controller.rb'" to begin playing outside of irb!
 
 To play, simply follow the instructions to either read the rules, play, or quit. A copy of the rules are below:
 
